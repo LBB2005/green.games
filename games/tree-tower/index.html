@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tree Tower - Green Games</title>
+    <style>
+        /* Tree Tower Game Styles */
+        :root {
+            --primary-green: #10b981;
+            --secondary-green: #059669;
+            --dark-green: #064e3b;
+            --light-green: #6ee7b7;
+            --accent-blue: #3b82f6;
+            --background-dark: #0f172a;
+            --background-card: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --oak-brown: #92400e;
+            --pine-green: #059669;
+            --birch-white: #f3f4f6;
+            --willow-gray: #6b7280;
+            --fruit-pink: #ec4899;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--background-dark);
+            color: var(--text-primary);
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background: linear-gradient(135deg, var(--dark-green), var(--secondary-green));
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .game-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--primary-green);
+        }
+
+        .game-stats {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: var(--light-green);
+        }
+
+        .game-canvas-container {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(180deg, 
+                var(--secondary-green) 0%, 
+                var(--dark-green) 50%, 
+                var(--background-dark) 100%);
+        }
+
+        #gameCanvas {
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            background: var(--background-dark);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .game-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .control-button {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.875rem;
+        }
+
+        .control-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .game-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+
+        .overlay-content {
+            background: var(--background-card);
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 400px;
+            border: 1px solid var(--border-color);
+        }
+
+        .overlay-title {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--primary-green);
+        }
+
+        .overlay-message {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .score-display {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--light-green);
+            margin-bottom: 2rem;
+        }
+
+        .instructions {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: rgba(15, 23, 42, 0.9);
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            max-width: 250px;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+        }
+
+        .instructions h4 {
+            color: var(--primary-green);
+            margin-bottom: 0.5rem;
+        }
+
+        .instructions ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .instructions li {
+            margin-bottom: 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .key {
+            background: var(--border-color);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.75rem;
+        }
+
+        .tree-info {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(15, 23, 42, 0.9);
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            max-width: 200px;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+        }
+
+        .tree-info h4 {
+            color: var(--primary-green);
+            margin-bottom: 0.5rem;
+        }
+
+        .tree-type {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.25rem;
+            padding: 0.25rem;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .tree-icon {
+            font-size: 1.2rem;
+        }
+
+        @media (max-width: 768px) {
+            .game-stats {
+                gap: 1rem;
+                font-size: 0.75rem;
+            }
+            
+            .instructions, .tree-info {
+                display: none;
+            }
+            
+            .game-header {
+                padding: 0.75rem;
+            }
+            
+            .game-title {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .game-stats {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .stat-item {
+                font-size: 0.75rem;
+            }
+            
+            .control-button {
+                padding: 8px 16px;
+                font-size: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <!-- Game Header with Stats -->
+        <div class="game-header">
+            <div class="game-title">🌳 Tree Tower</div>
+            <div class="game-stats">
+                <div class="stat-item">
+                    <span>Score:</span>
+                    <span class="stat-value" id="score">0</span>
+                </div>
+                <div class="stat-item">
+                    <span>Forest:</span>
+                    <span class="stat-value" id="forest">1</span>
+                </div>
+                <div class="stat-item">
+                    <span>Biodiversity:</span>
+                    <span class="stat-value" id="biodiversity">0%</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Canvas Container -->
+        <div class="game-canvas-container">
+            <canvas id="gameCanvas" width="800" height="500"></canvas>
+            
+            <!-- Instructions Panel -->
+            <div class="instructions">
+                <h4>How to Play</h4>
+                <ul>
+                    <li><span class="key">←→</span> Move tree</li>
+                    <li><span class="key">↑</span> Rotate tree</li>
+                    <li><span class="key">↓</span> Drop faster</li>
+                    <li><span class="key">SPACE</span> Drop tree</li>
+                </ul>
+                <p style="margin-top: 1rem; font-size: 0.75rem; color: var(--text-muted);">
+                    Build stable forest ecosystems by stacking different tree types!
+                </p>
+            </div>
+
+            <!-- Tree Info Panel -->
+            <div class="tree-info">
+                <h4>Tree Types</h4>
+                <div class="tree-type">
+                    <span class="tree-icon">🌳</span>
+                    <span>Oak - Stable base</span>
+                </div>
+                <div class="tree-type">
+                    <span class="tree-icon">🌲</span>
+                    <span>Pine - Adds height</span>
+                </div>
+                <div class="tree-type">
+                    <span class="tree-icon">🌸</span>
+                    <span>Fruit - Attracts wildlife</span>
+                </div>
+                <div class="tree-type">
+                    <span class="tree-icon">🌿</span>
+                    <span>Birch - Prevents erosion</span>
+                </div>
+                <div class="tree-type">
+                    <span class="tree-icon">🌾</span>
+                    <span>Willow - Manages water</span>
+                </div>
+            </div>
+
+            <!-- Game Overlay for Pause/Game Over -->
+            <div class="game-overlay" id="gameOverlay">
+                <div class="overlay-content">
+                    <div class="overlay-title" id="overlayTitle">Coming Soon!</div>
+                    <div class="overlay-message" id="overlayMessage">
+                        Tree Tower is currently in development. This physics-based stacking puzzle will let you build thriving forest ecosystems by strategically placing different tree types.
+                    </div>
+                    <div class="score-display">🌳 Build & Manage Forests</div>
+                    <button class="control-button" id="restartBtn">Back to Games</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Controls -->
+        <div class="game-controls">
+            <button class="control-button" id="pauseBtn">Pause</button>
+            <button class="control-button" id="muteBtn">Mute</button>
+            <button class="control-button" id="fullscreenBtn">Fullscreen</button>
+        </div>
+    </div>
+
+    <script>
+        // Placeholder script for Tree Tower
+        document.addEventListener('DOMContentLoaded', function() {
+            // Show coming soon overlay
+            document.getElementById('gameOverlay').style.display = 'flex';
+            
+            // Handle back button
+            document.getElementById('restartBtn').addEventListener('click', function() {
+                if (window.parent && window.parent !== window) {
+                    // Try multiple methods to communicate with parent
+                    if (window.parent.closeGame) {
+                        window.parent.closeGame();
+                    } else if (window.parent.gameLoader && window.parent.gameLoader.closeGame) {
+                        window.parent.gameLoader.closeGame();
+                    } else {
+                        // Fallback: send message to parent
+                        window.parent.postMessage({ action: 'closeGame' }, '*');
+                    }
+                } else {
+                    // If not in iframe, redirect to main page
+                    window.location.href = '../../index.html';
+                }
+            });
+            
+            // Handle other buttons
+            document.getElementById('pauseBtn').addEventListener('click', function() {
+                alert('Tree Tower is coming soon!');
+            });
+            
+            document.getElementById('muteBtn').addEventListener('click', function() {
+                alert('Audio controls will be available when the game launches!');
+            });
+            
+            document.getElementById('fullscreenBtn').addEventListener('click', function() {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen();
+                } else {
+                    document.exitFullscreen();
+                }
+            });
+        });
+    </script>
+</body>
+</html> 
