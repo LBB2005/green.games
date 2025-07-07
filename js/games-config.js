@@ -12,7 +12,14 @@
 
 // List of games - ADD YOUR DAD'S GAMES HERE
 const GAMES = [
-    // Example of how to add a game:
+    {
+        id: 'carbon-detective',
+        title: 'Carbon Detective',
+        description: 'Discover the hidden carbon footprints in everyday choices through this interactive quiz game!',
+        icon: '🕵️',
+        url: 'games/carbon-detective/index.html'
+    }
+    // Example of how to add more games:
     // {
     //     id: 'my-awesome-game',
     //     title: 'My Awesome Game',
@@ -56,17 +63,24 @@ function loadGames() {
 document.addEventListener('DOMContentLoaded', loadGames);
 
 function playGame(gameUrl) {
-    const gamePlayer = document.getElementById('gamePlayer');
-    const gameFrame = document.getElementById('gameFrame');
-    const gameTitle = document.getElementById('currentGameTitle');
-    
-    // Show game player
-    gamePlayer.classList.add('active');
-    gamePlayer.scrollIntoView({ behavior: 'smooth' });
-    
-    // Load game in iframe
-    gameFrame.innerHTML = `<iframe src="${gameUrl}" width="100%" height="100%" frameborder="0"></iframe>`;
-    gameTitle.textContent = 'Loading Game...';
+    // Check if it's a local game (starts with 'games/') or external URL
+    if (gameUrl.startsWith('games/')) {
+        // For local games, navigate directly to the game page
+        window.location.href = gameUrl;
+    } else {
+        // For external games, use the iframe player
+        const gamePlayer = document.getElementById('gamePlayer');
+        const gameFrame = document.getElementById('gameFrame');
+        const gameTitle = document.getElementById('currentGameTitle');
+        
+        // Show game player
+        gamePlayer.classList.add('active');
+        gamePlayer.scrollIntoView({ behavior: 'smooth' });
+        
+        // Load game in iframe
+        gameFrame.innerHTML = `<iframe src="${gameUrl}" width="100%" height="100%" frameborder="0"></iframe>`;
+        gameTitle.textContent = 'Loading Game...';
+    }
 }
 
 function closeGame() {

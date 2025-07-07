@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carbon Detective - EcoChallenge Quiz</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            transition: all 0.3s ease;
+        }
+
+        .game-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 2px 2px 4px rgba(0,0,0,0.3), 0 0 20px rgba(255,255,255,0.3); }
+            to { text-shadow: 2px 2px 4px rgba(0,0,0,0.3), 0 0 30px rgba(255,255,255,0.5); }
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .game-stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+            min-width: 120px;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #4CAF50;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .game-modes {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .mode-button {
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
+            padding: 15px 25px;
+            border-radius: 15px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .mode-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .mode-button.active {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .question-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transform: scale(0.95);
+            animation: slideIn 0.5s ease forwards;
+        }
+
+        @keyframes slideIn {
+            to {
+                transform: scale(1);
+            }
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .question-number {
+            background: #4CAF50;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .category-tag {
+            background: #2196F3;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 25px;
+            color: #333;
+            line-height: 1.4;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .option-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border: 2px solid transparent;
+            border-radius: 15px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border-color: #4CAF50;
+        }
+
+        .option-card.selected {
+            border-color: #4CAF50;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+        }
+
+        .option-card.correct {
+            border-color: #4CAF50;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            animation: correctPulse 0.6s ease;
+        }
+
+        .option-card.incorrect {
+            border-color: #f44336;
+            background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+            color: white;
+            animation: incorrectShake 0.6s ease;
+        }
+
+        @keyframes correctPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes incorrectShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .option-emoji {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .option-text {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .explanation {
+            background: rgba(76, 175, 80, 0.1);
+            border-left: 4px solid #4CAF50;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .explanation.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .explanation h4 {
+            color: #4CAF50;
+            margin-bottom: 10px;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            transition: width 0.3s ease;
+            border-radius: 3px;
+        }
+
+        .achievements {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .achievement {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: #333;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transform: translateX(300px);
+            animation: achievementSlide 3s ease forwards;
+        }
+
+        @keyframes achievementSlide {
+            10%, 90% { transform: translateX(0); }
+            0%, 100% { transform: translateX(300px); }
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .game-over {
+            text-align: center;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            margin-top: 30px;
+            display: none;
+        }
+
+        .game-over.show {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+
+        .final-score {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+
+        .carbon-impact {
+            background: rgba(76, 175, 80, 0.1);
+            border: 2px solid #4CAF50;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Back to main menu button */
+        .back-to-menu {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
+
+        .back-to-menu:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .game-stats {
+                gap: 15px;
+            }
+            
+            .stat-card {
+                padding: 10px 15px;
+                min-width: 100px;
+            }
+            
+            .question-container {
+                padding: 20px;
+            }
+            
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .back-to-menu {
+                position: relative;
+                top: 0;
+                left: 0;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles"></div>
+    
+    <!-- Back to main menu button -->
+    <button class="back-to-menu" onclick="window.location.href='../../index.html'">
+        ← Back to Games
+    </button>
+    
+    <div class="game-container">
+        <div class="header">
+            <h1>🕵️ Carbon Detective</h1>
+            <p>Discover the hidden carbon footprints in everyday choices</p>
+        </div>
+
+        <div class="game-stats">
+            <div class="stat-card">
+                <span class="stat-number" id="score">0</span>
+                <div class="stat-label">Score</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="streak">0</span>
+                <div class="stat-label">Streak</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="correct">0</span>
+                <div class="stat-label">Correct</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="total">0</span>
+                <div class="stat-label">Total</div>
+            </div>
+        </div>
+
+        <div class="game-modes">
+            <button class="mode-button active" data-mode="quick">🚀 Quick Play</button>
+            <button class="mode-button" data-mode="category">📚 Category Challenge</button>
+            <button class="mode-button" data-mode="survival">💪 Survival Mode</button>
+            <button class="mode-button" data-mode="timeattack">⏰ Time Attack</button>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <div class="question-container" id="questionContainer">
+            <div class="question-header">
+                <div class="question-number" id="questionNumber">Question 1</div>
+                <div class="category-tag" id="categoryTag">Transportation</div>
+            </div>
+            
+            <div class="question-text" id="questionText">
+                Loading question...
+            </div>
+            
+            <div class="options-grid" id="optionsGrid">
+                <!-- Options will be populated by JavaScript -->
+            </div>
+            
+            <div class="explanation" id="explanation">
+                <h4>💡 Did you know?</h4>
+                <p id="explanationText"></p>
+                <div class="carbon-impact" id="carbonImpact"></div>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" disabled>Next Question</button>
+                <button class="btn btn-secondary" id="hintBtn" onclick="useHint()">💡 Hint</button>
+            </div>
+        </div>
+
+        <div class="game-over" id="gameOver">
+            <h2>🎉 Game Complete!</h2>
+            <div class="final-score" id="finalScore">0</div>
+            <p>You've completed the Carbon Detective challenge!</p>
+            <div class="carbon-impact">
+                <h3>🌍 Your Environmental Impact</h3>
+                <p id="environmentalImpact">Great job learning about carbon footprints!</p>
+            </div>
+            <button class="btn btn-primary" onclick="restartGame()">Play Again</button>
+            <button class="btn btn-secondary" onclick="shareScore()">Share Score</button>
+        </div>
+    </div>
+
+    <div class="achievements" id="achievements"></div>
+
+    <script>
+        // Game state
+        let currentQuestion = 0;
+        let score = 0;
+        let streak = 0;
+        let correctAnswers = 0;
+        let totalQuestions = 0;
+        let gameMode = 'quick';
+        let questions = [];
+        let hintsUsed = 0;
+        let timeLeft = 60;
+        let gameTimer = null;
+
+        // Question database
+        const questionDatabase = [
+            {
+                category: "Transportation",
+                question: "Which mode of transport has the highest carbon footprint per passenger mile?",
+                options: [
+                    { text: "Domestic Flight", emoji: "✈️", correct: true },
+                    { text: "Electric Car", emoji: "🚗", correct: false },
+                    { text: "Train", emoji: "🚂", correct: false },
+                    { text: "Bus", emoji: "🚌", correct: false }
+                ],
+                explanation: "Domestic flights emit about 255g CO₂ per passenger mile, making them the highest carbon footprint transport option. Short flights are particularly inefficient due to takeoff and landing fuel consumption.",
+                impact: "Taking the train instead of flying for short trips can reduce your carbon footprint by up to 90%!",
+                difficulty: 1
+            },
+            {
+                category: "Food",
+                question: "Which food has the highest carbon footprint per kilogram?",
+                options: [
+                    { text: "Beef", emoji: "🥩", correct: true },
+                    { text: "Chicken", emoji: "🐔", correct: false },
+                    { text: "Tofu", emoji: "🥗", correct: false },
+                    { text: "Rice", emoji: "🍚", correct: false }
+                ],
+                explanation: "Beef production emits about 60kg CO₂ per kg of meat, primarily due to methane from cattle and the resources needed for feed production.",
+                impact: "Replacing beef with chicken once a week can save 1,500kg of CO₂ annually - equivalent to driving 6,000 miles!",
+                difficulty: 1
+            },
+            {
+                category: "Technology",
+                question: "What contributes most to a smartphone's carbon footprint?",
+                options: [
+                    { text: "Manufacturing", emoji: "🏭", correct: true },
+                    { text: "Daily charging", emoji: "🔌", correct: false },
+                    { text: "Data usage", emoji: "📱", correct: false },
+                    { text: "Packaging", emoji: "📦", correct: false }
+                ],
+                explanation: "About 85% of a smartphone's carbon footprint comes from manufacturing. The energy-intensive process of mining rare earth metals and chip production creates most emissions.",
+                impact: "Keeping your phone for 3 years instead of 2 can reduce its annual carbon footprint by 33%!",
+                difficulty: 2
+            },
+            {
+                category: "Home",
+                question: "Which home activity uses the most energy?",
+                options: [
+                    { text: "Heating/Cooling", emoji: "🌡️", correct: true },
+                    { text: "Water heating", emoji: "🚿", correct: false },
+                    { text: "Lighting", emoji: "💡", correct: false },
+                    { text: "Appliances", emoji: "📺", correct: false }
+                ],
+                explanation: "Heating and cooling account for about 48% of home energy use. Proper insulation and efficient HVAC systems can dramatically reduce this.",
+                impact: "Lowering your thermostat by just 2°F can save 2,000 pounds of CO₂ annually!",
+                difficulty: 1
+            },
+            {
+                category: "Transportation",
+                question: "Which is more carbon-efficient for a 300-mile trip?",
+                options: [
+                    { text: "Driving alone", emoji: "🚗", correct: false },
+                    { text: "Flying", emoji: "✈️", correct: false },
+                    { text: "Train", emoji: "🚂", correct: true },
+                    { text: "Bus", emoji: "🚌", correct: false }
+                ],
+                explanation: "For medium-distance trips, trains are typically the most carbon-efficient option, emitting about 0.2kg CO₂ per passenger mile compared to 0.4kg for cars and 0.25kg for planes.",
+                impact: "Choosing train over car for a 300-mile trip can save 60kg of CO₂ emissions!",
+                difficulty: 2
+            },
+            {
+                category: "Food",
+                question: "Which produces more CO₂: local beef or imported vegetables?",
+                options: [
+                    { text: "Local beef", emoji: "🥩", correct: true },
+                    { text: "Imported vegetables", emoji: "🥬", correct: false },
+                    { text: "They're equal", emoji: "⚖️", correct: false },
+                    { text: "It depends on season", emoji: "🌱", correct: false }
+                ],
+                explanation: "Local beef still has a much higher carbon footprint than imported vegetables. Transportation typically accounts for only 6% of food emissions, while production methods matter most.",
+                impact: "The 'eat local' rule is less important than 'eat less meat' for reducing your carbon footprint!",
+                difficulty: 3
+            },
+            {
+                category: "Technology",
+                question: "Which streaming quality uses more energy?",
+                options: [
+                    { text: "4K Ultra HD", emoji: "📺", correct: true },
+                    { text: "1080p HD", emoji: "💻", correct: false },
+                    { text: "720p SD", emoji: "📱", correct: false },
+                    { text: "Audio only", emoji: "🎵", correct: false }
+                ],
+                explanation: "4K streaming uses about 7GB per hour compared to 1GB for 720p. Higher quality = more data = more energy consumption in data centers.",
+                impact: "Watching in HD instead of 4K can reduce your streaming carbon footprint by 75%!",
+                difficulty: 2
+            },
+            {
+                category: "Home",
+                question: "Which laundry practice saves the most energy?",
+                options: [
+                    { text: "Washing in cold water", emoji: "🧊", correct: true },
+                    { text: "Using less detergent", emoji: "🧴", correct: false },
+                    { text: "Shorter wash cycles", emoji: "⏰", correct: false },
+                    { text: "Larger loads", emoji: "👕", correct: false }
+                ],
+                explanation: "About 90% of washing machine energy goes to heating water. Cold water cleaning is just as effective for most clothes and saves massive amounts of energy.",
+                impact: "Washing clothes in cold water can save 1,600 pounds of CO₂ per year!",
+                difficulty: 2
+            },
+            {
+                category: "Consumer",
+                question: "Which shopping choice has the lowest carbon impact?",
+                options: [
+                    { text: "Buying second-hand", emoji: "♻️", correct: true },
+                    { text: "Buying local", emoji: "🏪", correct: false },
+                    { text: "Buying organic", emoji: "🌱", correct: false },
+                    { text: "Buying in bulk", emoji: "📦", correct: false }
+                ],
+                explanation: "Second-hand purchases have virtually no additional carbon footprint since the manufacturing emissions have already been 'paid' by the original purchase.",
+                impact: "Buying one second-hand item instead of new each month can save 1,000kg of CO₂ annually!",
+                difficulty: 2
+            },
+            {
+                category: "Food",
+                question: "Which milk alternative has the lowest carbon footprint?",
+                options: [
+                    { text: "Oat milk", emoji: "🌾", correct: true },
+                    { text: "Almond milk", emoji: "🥜", correct: false },
+                    { text: "Soy milk", emoji: "🫘", correct: false },
+                    { text: "Dairy milk", emoji: "🥛", correct: false }
+                ],
+                explanation: "Oat milk has the lowest carbon footprint at 0.9kg CO₂ per liter, compared to 3.2kg for dairy milk. Oats also require less water than almonds.",
+                impact: "Switching from dairy to oat milk can save 230kg of CO₂ per year for an average consumer!",
+                difficulty: 3
+            }
+        ];
+
+        // Initialize game
+        function initGame() {
+            createParticles();
+            setupModeButtons();
+            loadQuestions();
+            displayQuestion();
+        }
+
+        function createParticles() {
+            const particles = document.querySelector('.particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                particles.appendChild(particle);
+            }
+        }
+
+        function setupModeButtons() {
+            document.querySelectorAll('.mode-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    document.querySelectorAll('.mode-button').forEach(b => b.classList.remove('active'));
+                    button.classList.add('active');
+                    gameMode = button.dataset.mode;
+                    resetGame();
+                });
+            });
+        }
+
+        function loadQuestions() {
+            switch(gameMode) {
+                case 'quick':
+                    questions = shuffleArray([...questionDatabase]).slice(0, 10);
+                    break;
+                case 'category':
+                    // For demo, using all questions - in real app, would filter by category
+                    questions = shuffleArray([...questionDatabase]);
+                    break;
+                case 'survival':
+                    questions = shuffleArray([...questionDatabase]);
+                    break;
+                case 'timeattack':
+                    questions = shuffleArray([...questionDatabase]);
+                    timeLeft = 60;
+                    startTimer();
+                    break;
+            }
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function displayQuestion() {
+            if (currentQuestion >= questions.length) {
+                endGame();
+                return;
+            }
+
+            const question = questions[currentQuestion];
+            const questionContainer = document.getElementById('questionContainer');
+            const gameOver = document.getElementById('gameOver');
+            
+            questionContainer.classList.remove('hidden');
+            gameOver.classList.remove('show');
+
+            document.getElementById('questionNumber').textContent = `Question ${currentQuestion + 1}`;
+            document.getElementById('categoryTag').textContent = question.category;
+            document.getElementById('questionText').textContent = question.question;
+
+            // Update progress bar
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            document.getElementById('progressFill').style.width = `${progress}%`;
+
+            // Create options
+            const optionsGrid = document.getElementById('optionsGrid');
+            optionsGrid.innerHTML = '';
+
+            question.options.forEach((option, index) => {
+                const optionCard = document.createElement('div');
+                optionCard.className = 'option-card';
+                optionCard.innerHTML = `
+                    <span class="option-emoji">${option.emoji}</span>
+                    <div class="option-text">${option.text}</div>
+                `;
+                optionCard.addEventListener('click', () => selectOption(index));
+                optionsGrid.appendChild(optionCard);
+            });
+
+            // Reset UI
+            document.getElementById('explanation').classList.remove('show');
+            document.getElementById('nextBtn').disabled = true;
+            document.getElementById('hintBtn').disabled = false;
+
+            // Update background based on question difficulty
+            updateBackground(question.difficulty);
+        }
+
+        function updateBackground(difficulty) {
+            const body = document.body;
+            switch(difficulty) {
+                case 1:
+                    body.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                    break;
+                case 2:
+                    body.style.background = 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)';
+                    break;
+                case 3:
+                    body.style.background = 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)';
+                    break;
+            }
+        }
+
+        function selectOption(selectedIndex) {
+            const question = questions[currentQuestion];
+            const options = document.querySelectorAll('.option-card');
+            const isCorrect = question.options[selectedIndex].correct;
+
+            // Disable all options
+            options.forEach(option => option.style.pointerEvents = 'none');
+
+            // Show results
+            options.forEach((option, index) => {
+                if (question.options[index].correct) {
+                    option.classList.add('correct');
+                } else if (index === selectedIndex && !isCorrect) {
+                    option.classList.add('incorrect');
+                }
+            });
+
+            // Update score and stats
+            totalQuestions++;
+            if (isCorrect) {
+                correctAnswers++;
+                streak++;
+                score += 10 * (streak > 5 ? 2 : 1); // Bonus for streaks
+                checkAchievements();
+            } else {
+                streak = 0;
+                if (gameMode === 'survival') {
+                    // In survival mode, end game after 3 wrong answers
+                    // For simplicity, we'll just continue for now
+                }
+            }
+
+            updateStats();
+            showExplanation();
+            document.getElementById('nextBtn').disabled = false;
+            document.getElementById('hintBtn').disabled = true;
+        }
+
+        function showExplanation() {
+            const question = questions[currentQuestion];
+            const explanation = document.getElementById('explanation');
+            const explanationText = document.getElementById('explanationText');
+            const carbonImpact = document.getElementById('carbonImpact');
+
+            explanationText.textContent = question.explanation;
+            carbonImpact.innerHTML = `<strong>🌍 Action Tip:</strong> ${question.impact}`;
+            explanation.classList.add('show');
+        }
+
+        function updateStats() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('streak').textContent = streak;
+            document.getElementById('correct').textContent = correctAnswers;
+            document.getElementById('total').textContent = totalQuestions;
+        }
+
+        function checkAchievements() {
+            const achievements = [];
+            
+            if (correctAnswers === 5) achievements.push("🌱 Eco Learner - 5 correct answers!");
+            if (correctAnswers === 10) achievements.push("🌿 Green Guardian - 10 correct answers!");
+            if (streak === 5) achievements.push("🔥 On Fire - 5 question streak!");
+            if (streak === 10) achievements.push("⚡ Unstoppable - 10 question streak!");
+            if (hintsUsed === 0 && currentQuestion >= 4) achievements.push("🧠 Brain Power - No hints used!");
+            
+            achievements.forEach(achievement => showAchievement(achievement));
+        }
+
+        function showAchievement(text) {
+            const achievementsContainer = document.getElementById('achievements');
+            const achievement = document.createElement('div');
+            achievement.className = 'achievement';
+            achievement.textContent = text;
+            achievementsContainer.appendChild(achievement);
+            
+            setTimeout(() => {
+                achievement.remove();
+            }, 3000);
+        }
+
+        function useHint() {
+            hintsUsed++;
+            const question = questions[currentQuestion];
+            const wrongOptions = question.options
+                .map((option, index) => ({ option, index }))
+                .filter(item => !item.option.correct);
+            
+            // Remove two wrong options
+            const toRemove = wrongOptions.slice(0, 2);
+            const options = document.querySelectorAll('.option-card');
+            
+            toRemove.forEach(item => {
+                options[item.index].style.opacity = '0.3';
+                options[item.index].style.pointerEvents = 'none';
+            });
+            
+            document.getElementById('hintBtn').disabled = true;
+            showAchievement("💡 Hint used - 2 wrong answers removed!");
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            displayQuestion();
+        }
+
+        function startTimer() {
+            if (gameTimer) clearInterval(gameTimer);
+            
+            gameTimer = setInterval(() => {
+                timeLeft--;
+                if (timeLeft <= 0) {
+                    clearInterval(gameTimer);
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        function endGame() {
+            clearInterval(gameTimer);
+            const questionContainer = document.getElementById('questionContainer');
+            const gameOver = document.getElementById('gameOver');
+            
+            questionContainer.classList.add('hidden');
+            gameOver.classList.add('show');
+            
+            const finalScore = document.getElementById('finalScore');
+            const environmentalImpact = document.getElementById('environmentalImpact');
+            
+            finalScore.textContent = score;
+            
+            const accuracy = totalQuestions > 0 ? Math.round((correctAnswers / totalQuestions) * 100) : 0;
+            const treesEquivalent = Math.floor(correctAnswers * 0.5);
+            const carbonSaved = correctAnswers * 50;
+            
+            environmentalImpact.innerHTML = `
+                <p><strong>Accuracy:</strong> ${accuracy}% (${correctAnswers}/${totalQuestions})</p>
+                <p><strong>Environmental Knowledge Gained:</strong> Equivalent to planting ${treesEquivalent} trees! 🌳</p>
+                <p><strong>Potential CO₂ Savings:</strong> ${carbonSaved}kg per year if you apply what you learned! 🌍</p>
+                <p><strong>Streak Record:</strong> ${Math.max(...streakHistory || [streak])} questions in a row! 🔥</p>
+            `;
+        }
+
+        function restartGame() {
+            resetGame();
+            loadQuestions();
+            displayQuestion();
+        }
+
+        function resetGame() {
+            currentQuestion = 0;
+            score = 0;
+            streak = 0;
+            correctAnswers = 0;
+            totalQuestions = 0;
+            hintsUsed = 0;
+            timeLeft = 60;
+            clearInterval(gameTimer);
+            updateStats();
+        }
+
+        function shareScore() {
+            const shareText = `🕵️ I just scored ${score} points in Carbon Detective! I got ${correctAnswers}/${totalQuestions} questions right and learned how to reduce my carbon footprint. Try it yourself! #CarbonDetective #ClimateAction`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Carbon Detective Score',
+                    text: shareText,
+                    url: window.location.href
+                });
+            } else {
+                // Fallback - copy to clipboard
+                navigator.clipboard.writeText(shareText).then(() => {
+                    showAchievement("📋 Score copied to clipboard!");
+                });
+            }
+        }
+
+        // Add keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key >= '1' && e.key <= '4') {
+                const optionIndex = parseInt(e.key) - 1;
+                const options = document.querySelectorAll('.option-card');
+                if (options[optionIndex] && options[optionIndex].style.pointerEvents !== 'none') {
+                    selectOption(optionIndex);
+                }
+            } else if (e.key === 'Enter') {
+                const nextBtn = document.getElementById('nextBtn');
+                if (!nextBtn.disabled) {
+                    nextQuestion();
+                }
+            } else if (e.key === 'h' || e.key === 'H') {
+                const hintBtn = document.getElementById('hintBtn');
+                if (!hintBtn.disabled) {
+                    useHint();
+                }
+            }
+        });
+
+        // Add sound effects (using Web Audio API)
+        function playSound(type) {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            switch(type) {
+                case 'correct':
+                    oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime); // C5
+                    oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1); // E5
+                    break;
+                case 'incorrect':
+                    oscillator.frequency.setValueAtTime(220, audioContext.currentTime); // A3
+                    oscillator.frequency.setValueAtTime(196, audioContext.currentTime + 0.1); // G3
+                    break;
+                case 'achievement':
+                    oscillator.frequency.setValueAtTime(440, audioContext.currentTime); // A4
+                    oscillator.frequency.setValueAtTime(554.37, audioContext.currentTime + 0.05); // C#5
+                    oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1); // E5
+                    break;
+            }
+            
+            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.2);
+        }
+
+        // Enhanced selectOption function with sound
+        const originalSelectOption = selectOption;
+        selectOption = function(selectedIndex) {
+            const question = questions[currentQuestion];
+            const isCorrect = question.options[selectedIndex].correct;
+            
+            // Play sound
+            playSound(isCorrect ? 'correct' : 'incorrect');
+            
+            // Call original function
+            originalSelectOption(selectedIndex);
+        };
+
+        // Enhanced showAchievement function with sound
+        const originalShowAchievement = showAchievement;
+        showAchievement = function(text) {
+            playSound('achievement');
+            originalShowAchievement(text);
+        };
+
+        // Add dark mode toggle
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+        }
+
+        // Load dark mode preference
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.body.classList.add('dark-mode');
+        }
+
+        // Add CSS for dark mode
+        const darkModeStyles = `
+            .dark-mode {
+                background: linear-gradient(135deg, #232526 0%, #414345 100%) !important;
+            }
+            .dark-mode .stat-card,
+            .dark-mode .question-container,
+            .dark-mode .game-over {
+                background: rgba(255, 255, 255, 0.1) !important;
+                color: white !important;
+                border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            }
+            .dark-mode .option-card {
+                background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%) !important;
+                color: white !important;
+            }
+            .dark-mode .explanation {
+                background: rgba(76, 175, 80, 0.2) !important;
+                color: white !important;
+            }
+        `;
+
+        const styleSheet = document.createElement('style');
+        styleSheet.textContent = darkModeStyles;
+        document.head.appendChild(styleSheet);
+
+        // Track streak history for achievements
+        let streakHistory = [];
+
+        // Enhanced checkAchievements to track streaks
+        const originalCheckAchievements = checkAchievements;
+        checkAchievements = function() {
+            streakHistory.push(streak);
+            originalCheckAchievements();
+        };
+
+        // Add accessibility features
+        function addAccessibility() {
+            // Add ARIA labels
+            document.getElementById('questionText').setAttribute('aria-live', 'polite');
+            document.getElementById('score').setAttribute('aria-live', 'polite');
+            
+            // Add focus management
+            const options = document.querySelectorAll('.option-card');
+            options.forEach((option, index) => {
+                option.setAttribute('tabindex', '0');
+                option.setAttribute('role', 'button');
+                option.setAttribute('aria-label', `Option ${index + 1}`);
+                
+                option.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        selectOption(index);
+                    }
+                });
+            });
+        }
+
+        // Initialize accessibility features when displaying questions
+        const originalDisplayQuestion = displayQuestion;
+        displayQuestion = function() {
+            originalDisplayQuestion();
+            setTimeout(addAccessibility, 100); // Wait for DOM update
+        };
+
+        // Add instructions for screen readers
+        const instructions = document.createElement('div');
+        instructions.className = 'sr-only';
+        instructions.textContent = 'Carbon Detective quiz game. Use number keys 1-4 to select answers, H for hints, and Enter for next question.';
+        instructions.style.position = 'absolute';
+        instructions.style.left = '-10000px';
+        instructions.style.width = '1px';
+        instructions.style.height = '1px';
+        instructions.style.overflow = 'hidden';
+        document.body.appendChild(instructions);
+
+        // Initialize the game when the page loads
+        window.addEventListener('load', initGame);
+
+        // Add service worker for offline support (basic implementation)
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js').catch(() => {
+                // Service worker registration failed, but game continues
+            });
+        }
+    </script>
+</body>
+</html> 
