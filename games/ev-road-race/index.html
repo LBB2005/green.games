@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EV Road Race</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            overflow: hidden;
+        }
+
+        /* Back to main menu button */
+        .back-to-menu {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            color: #333;
+        }
+
+        .back-to-menu:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .game-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hud {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .hud-left, .hud-right {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        .battery-display {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .battery-bar {
+            width: 150px;
+            height: 20px;
+            background: #333;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 2px solid #00ff88;
+        }
+
+        .battery-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff88, #88ff00);
+            transition: width 0.3s ease;
+            border-radius: 8px;
+        }
+
+        .speed-display {
+            font-size: 24px;
+            font-weight: bold;
+            color: #00ff88;
+        }
+
+        .race-track {
+            flex: 1;
+            position: relative;
+            background: #2c3e50;
+            overflow: hidden;
+        }
+
+        .road {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: 100%;
+            background: #34495e;
+            border-left: 4px solid #f39c12;
+            border-right: 4px solid #f39c12;
+        }
+
+        .road-lines {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 100%;
+            background: repeating-linear-gradient(
+                to bottom,
+                white 0px,
+                white 30px,
+                transparent 30px,
+                transparent 60px
+            );
+            animation: roadScroll 0.5s linear infinite;
+        }
+
+        @keyframes roadScroll {
+            0% { transform: translateX(-50%) translateY(0); }
+            100% { transform: translateX(-50%) translateY(60px); }
+        }
+
+        .player-car {
+            position: absolute;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 80px;
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            border-radius: 10px 10px 5px 5px;
+            border: 2px solid #1abc9c;
+            transition: left 0.2s ease;
+            z-index: 50;
+        }
+
+        .player-car::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 5px;
+            right: 5px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+        }
+
+        .charging-station {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 40px;
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            border-radius: 5px;
+            border: 2px solid #f39c12;
+            animation: moveDown 3s linear infinite;
+        }
+
+        .charging-station::before {
+            content: '⚡';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 20px;
+            color: white;
+        }
+
+        .obstacle {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 35px;
+            height: 70px;
+            background: linear-gradient(45deg, #95a5a6, #7f8c8d);
+            border-radius: 8px;
+            border: 2px solid #34495e;
+            animation: moveDown 2.5s linear infinite;
+        }
+
+        @keyframes moveDown {
+            0% { top: -100px; }
+            100% { top: 100vh; }
+        }
+
+        .controls {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 100;
+        }
+
+        .control-btn {
+            padding: 15px 25px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #00ff88;
+            border-radius: 10px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .control-btn:hover {
+            background: rgba(0, 255, 136, 0.2);
+            transform: scale(1.05);
+        }
+
+        .control-btn:active {
+            transform: scale(0.95);
+        }
+
+        .game-over {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            border: 3px solid #e74c3c;
+            z-index: 200;
+            display: none;
+        }
+
+        .game-over h2 {
+            color: #e74c3c;
+            margin-bottom: 20px;
+            font-size: 36px;
+        }
+
+        .restart-btn {
+            padding: 15px 30px;
+            background: #27ae60;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background 0.3s ease;
+        }
+
+        .restart-btn:hover {
+            background: #2ecc71;
+        }
+
+        .efficiency-bonus {
+            position: absolute;
+            font-size: 18px;
+            font-weight: bold;
+            color: #f39c12;
+            pointer-events: none;
+            animation: floatUp 2s ease-out forwards;
+        }
+
+        @keyframes floatUp {
+            0% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-50px); }
+        }
+
+        .start-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 300;
+        }
+
+        .start-screen h1 {
+            font-size: 48px;
+            margin-bottom: 30px;
+            color: #00ff88;
+            text-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+        }
+
+        .start-screen p {
+            font-size: 18px;
+            margin-bottom: 10px;
+            text-align: center;
+            max-width: 600px;
+        }
+
+        .start-btn {
+            padding: 20px 40px;
+            background: linear-gradient(45deg, #00ff88, #88ff00);
+            border: none;
+            border-radius: 15px;
+            color: black;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 30px;
+            transition: transform 0.3s ease;
+        }
+
+        .start-btn:hover {
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 768px) {
+            .back-to-menu {
+                position: relative;
+                top: 0;
+                left: 0;
+                margin: 10px;
+            }
+            
+            .hud {
+                left: 10px;
+                right: 10px;
+                top: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Back to main menu button -->
+    <button class="back-to-menu" onclick="window.location.href='../../index.html'">
+        ← Back to Games
+    </button>
+
+    <div class="game-container">
+        <div class="start-screen" id="startScreen">
+            <h1>⚡ EV Road Race ⚡</h1>
+            <p>Navigate your electric vehicle through traffic while managing your battery!</p>
+            <p>🔋 Collect charging stations to refuel</p>
+            <p>🚗 Avoid other vehicles</p>
+            <p>⚡ Drive efficiently for bonus points</p>
+            <p>🏁 How far can you go?</p>
+            <button class="start-btn" onclick="startGame()">START RACE</button>
+        </div>
+
+        <div class="hud">
+            <div class="hud-left">
+                <div class="battery-display">
+                    <span>🔋</span>
+                    <div class="battery-bar">
+                        <div class="battery-fill" id="batteryFill"></div>
+                    </div>
+                    <span id="batteryPercent">100%</span>
+                </div>
+                <div>Distance: <span id="distance">0</span>km</div>
+                <div>Score: <span id="score">0</span></div>
+            </div>
+            <div class="hud-right">
+                <div class="speed-display" id="speedDisplay">0 km/h</div>
+                <div>Efficiency: <span id="efficiency">100%</span></div>
+            </div>
+        </div>
+
+        <div class="race-track">
+            <div class="road"></div>
+            <div class="road-lines"></div>
+            <div class="player-car" id="playerCar"></div>
+        </div>
+
+        <div class="controls">
+            <button class="control-btn" onmousedown="moveLeft()" onmouseup="stopMove()">← LEFT</button>
+            <button class="control-btn" onmousedown="accelerate()" onmouseup="decelerate()">BOOST</button>
+            <button class="control-btn" onmousedown="moveRight()" onmouseup="stopMove()">RIGHT →</button>
+        </div>
+
+        <div class="game-over" id="gameOver">
+            <h2>Race Over!</h2>
+            <p>Your EV ran out of power!</p>
+            <p>Distance: <span id="finalDistance">0</span>km</p>
+            <p>Final Score: <span id="finalScore">0</span></p>
+            <button class="restart-btn" onclick="restartGame()">Race Again</button>
+        </div>
+    </div>
+
+    <script>
+        let gameState = {
+            battery: 100,
+            speed: 60,
+            baseSpeed: 60,
+            distance: 0,
+            score: 0,
+            carPosition: 0, // -1 left, 0 center, 1 right
+            isAccelerating: false,
+            gameRunning: false,
+            obstacles: [],
+            chargingStations: [],
+            lastObstacleTime: 0,
+            lastChargingTime: 0,
+            efficiency: 100
+        };
+
+        let gameLoop;
+        let moveInterval;
+
+        function startGame() {
+            document.getElementById('startScreen').style.display = 'none';
+            gameState.gameRunning = true;
+            gameLoop = setInterval(updateGame, 50);
+        }
+
+        function updateGame() {
+            if (!gameState.gameRunning) return;
+
+            // Update speed and battery
+            if (gameState.isAccelerating) {
+                gameState.speed = Math.min(120, gameState.speed + 1);
+                gameState.battery -= 0.08; // More battery drain when boosting
+                gameState.efficiency = Math.max(70, gameState.efficiency - 0.5);
+            } else {
+                gameState.speed = Math.max(gameState.baseSpeed, gameState.speed - 0.5);
+                gameState.battery -= 0.04; // Normal battery drain
+                gameState.efficiency = Math.min(100, gameState.efficiency + 0.1);
+            }
+
+            // Update distance and score
+            gameState.distance += gameState.speed / 1000;
+            gameState.score += Math.floor(gameState.speed / 10 * (gameState.efficiency / 100));
+
+            // Spawn obstacles
+            if (Date.now() - gameState.lastObstacleTime > 2000 + Math.random() * 2000) {
+                spawnObstacle();
+                gameState.lastObstacleTime = Date.now();
+            }
+
+            // Spawn charging stations
+            if (Date.now() - gameState.lastChargingTime > 8000 + Math.random() * 5000) {
+                spawnChargingStation();
+                gameState.lastChargingTime = Date.now();
+            }
+
+            // Check collisions
+            checkCollisions();
+
+            // Update UI
+            updateUI();
+
+            // Check game over
+            if (gameState.battery <= 0) {
+                gameOver();
+            }
+        }
+
+        function spawnObstacle() {
+            const obstacle = document.createElement('div');
+            obstacle.className = 'obstacle';
+            obstacle.style.left = `calc(50% + ${(Math.random() - 0.5) * 200}px)`;
+            document.querySelector('.race-track').appendChild(obstacle);
+            
+            gameState.obstacles.push(obstacle);
+            
+            setTimeout(() => {
+                if (obstacle.parentNode) {
+                    obstacle.parentNode.removeChild(obstacle);
+                }
+                gameState.obstacles = gameState.obstacles.filter(o => o !== obstacle);
+            }, 3000);
+        }
+
+        function spawnChargingStation() {
+            const station = document.createElement('div');
+            station.className = 'charging-station';
+            station.style.left = `calc(50% + ${(Math.random() - 0.5) * 200}px)`;
+            document.querySelector('.race-track').appendChild(station);
+            
+            gameState.chargingStations.push(station);
+            
+            setTimeout(() => {
+                if (station.parentNode) {
+                    station.parentNode.removeChild(station);
+                }
+                gameState.chargingStations = gameState.chargingStations.filter(s => s !== station);
+            }, 3000);
+        }
+
+        function checkCollisions() {
+            const playerCar = document.getElementById('playerCar');
+            const playerRect = playerCar.getBoundingClientRect();
+
+            // Check obstacle collisions
+            gameState.obstacles.forEach(obstacle => {
+                const obstacleRect = obstacle.getBoundingClientRect();
+                if (isColliding(playerRect, obstacleRect)) {
+                    // Collision with obstacle - lose battery
+                    gameState.battery = Math.max(0, gameState.battery - 20);
+                    gameState.efficiency = Math.max(50, gameState.efficiency - 10);
+                    obstacle.style.background = 'linear-gradient(45deg, #e74c3c, #c0392b)';
+                    showEfficiencyBonus(playerCar, '-20% Battery!', '#e74c3c');
+                }
+            });
+
+            // Check charging station collisions
+            gameState.chargingStations.forEach(station => {
+                const stationRect = station.getBoundingClientRect();
+                if (isColliding(playerRect, stationRect)) {
+                    // Collision with charging station - gain battery
+                    gameState.battery = Math.min(100, gameState.battery + 30);
+                    gameState.score += 100;
+                    gameState.efficiency = Math.min(100, gameState.efficiency + 5);
+                    station.style.display = 'none';
+                    showEfficiencyBonus(playerCar, '+30% Charge!', '#00ff88');
+                }
+            });
+        }
+
+        function isColliding(rect1, rect2) {
+            return !(rect1.right < rect2.left || 
+                     rect1.left > rect2.right || 
+                     rect1.bottom < rect2.top || 
+                     rect1.top > rect2.bottom);
+        }
+
+        function showEfficiencyBonus(element, text, color) {
+            const bonus = document.createElement('div');
+            bonus.className = 'efficiency-bonus';
+            bonus.textContent = text;
+            bonus.style.color = color;
+            bonus.style.left = element.style.left || '50%';
+            bonus.style.top = '400px';
+            document.querySelector('.race-track').appendChild(bonus);
+            
+            setTimeout(() => {
+                if (bonus.parentNode) {
+                    bonus.parentNode.removeChild(bonus);
+                }
+            }, 2000);
+        }
+
+        function updateUI() {
+            document.getElementById('batteryFill').style.width = `${Math.max(0, gameState.battery)}%`;
+            document.getElementById('batteryPercent').textContent = `${Math.max(0, Math.floor(gameState.battery))}%`;
+            document.getElementById('speedDisplay').textContent = `${Math.floor(gameState.speed)} km/h`;
+            document.getElementById('distance').textContent = Math.floor(gameState.distance);
+            document.getElementById('score').textContent = gameState.score;
+            document.getElementById('efficiency').textContent = `${Math.floor(gameState.efficiency)}%`;
+            
+            // Update battery color based on level
+            const batteryFill = document.getElementById('batteryFill');
+            if (gameState.battery < 20) {
+                batteryFill.style.background = 'linear-gradient(90deg, #e74c3c, #c0392b)';
+            } else if (gameState.battery < 50) {
+                batteryFill.style.background = 'linear-gradient(90deg, #f39c12, #e67e22)';
+            } else {
+                batteryFill.style.background = 'linear-gradient(90deg, #00ff88, #88ff00)';
+            }
+        }
+
+        function moveLeft() {
+            if (gameState.carPosition > -1) {
+                gameState.carPosition--;
+                updateCarPosition();
+            }
+        }
+
+        function moveRight() {
+            if (gameState.carPosition < 1) {
+                gameState.carPosition++;
+                updateCarPosition();
+            }
+        }
+
+        function updateCarPosition() {
+            const car = document.getElementById('playerCar');
+            car.style.left = `calc(50% + ${gameState.carPosition * 80}px)`;
+        }
+
+        function stopMove() {
+            // Movement is instantaneous, no need to stop
+        }
+
+        function accelerate() {
+            gameState.isAccelerating = true;
+        }
+
+        function decelerate() {
+            gameState.isAccelerating = false;
+        }
+
+        function gameOver() {
+            gameState.gameRunning = false;
+            clearInterval(gameLoop);
+            
+            document.getElementById('finalDistance').textContent = Math.floor(gameState.distance);
+            document.getElementById('finalScore').textContent = gameState.score;
+            document.getElementById('gameOver').style.display = 'block';
+        }
+
+        function restartGame() {
+            // Reset game state
+            gameState = {
+                battery: 100,
+                speed: 60,
+                baseSpeed: 60,
+                distance: 0,
+                score: 0,
+                carPosition: 0,
+                isAccelerating: false,
+                gameRunning: false,
+                obstacles: [],
+                chargingStations: [],
+                lastObstacleTime: 0,
+                lastChargingTime: 0,
+                efficiency: 100
+            };
+
+            // Clear obstacles and charging stations
+            document.querySelectorAll('.obstacle, .charging-station, .efficiency-bonus').forEach(el => {
+                el.remove();
+            });
+
+            // Reset UI
+            document.getElementById('gameOver').style.display = 'none';
+            updateCarPosition();
+            updateUI();
+
+            // Start new game
+            startGame();
+        }
+
+        // Keyboard controls
+        document.addEventListener('keydown', (e) => {
+            if (!gameState.gameRunning) return;
+            
+            switch(e.key) {
+                case 'ArrowLeft':
+                case 'a':
+                case 'A':
+                    moveLeft();
+                    break;
+                case 'ArrowRight':
+                case 'd':
+                case 'D':
+                    moveRight();
+                    break;
+                case 'ArrowUp':
+                case 'w':
+                case 'W':
+                case ' ':
+                    accelerate();
+                    break;
+            }
+        });
+
+        document.addEventListener('keyup', (e) => {
+            if (!gameState.gameRunning) return;
+            
+            switch(e.key) {
+                case 'ArrowUp':
+                case 'w':
+                case 'W':
+                case ' ':
+                    decelerate();
+                    break;
+            }
+        });
+
+        // Initialize UI
+        updateUI();
+    </script>
+</body>
+</html> 

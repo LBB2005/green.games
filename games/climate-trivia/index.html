@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoTrivia Challenge</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: linear-gradient(135deg, #f0fdf4 0%, #dbeafe 100%);
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+        /* Back to main menu button */
+        .back-to-menu {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            color: #333;
+        }
+
+        .back-to-menu:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .container {
+            max-width: 64rem;
+            margin: 0 auto;
+            padding-top: 60px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .header-title h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #1f2937;
+        }
+
+        .icon {
+            width: 2rem;
+            height: 2rem;
+            color: #059669;
+        }
+
+        .subtitle {
+            font-size: 1.125rem;
+            color: #6b7280;
+        }
+
+        .card {
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .category-btn {
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            border: 2px solid #e5e7eb;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .category-btn:hover {
+            border-color: #d1d5db;
+        }
+
+        .category-btn.active {
+            color: white;
+            border-color: transparent;
+        }
+
+        .category-btn.active.climate { background: #3b82f6; }
+        .category-btn.active.energy { background: #eab308; }
+        .category-btn.active.sustainability { background: #059669; }
+        .category-btn.active.recycling { background: #8b5cf6; }
+        .category-btn.active.all { background: #3b82f6; }
+
+        .category-btn .category-name {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .category-btn .question-count {
+            font-size: 0.875rem;
+            opacity: 0.8;
+        }
+
+        .input-group {
+            max-width: 24rem;
+            margin: 0 auto;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .input-field:focus {
+            outline: none;
+            ring: 2px;
+            ring-color: #059669;
+            border-color: transparent;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: #059669;
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #047857;
+        }
+
+        .btn-secondary {
+            background: #eab308;
+            color: white;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #d97706;
+        }
+
+        .btn-full {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .category-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #6b7280;
+        }
+
+        .score-display {
+            text-align: right;
+        }
+
+        .score-points {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #059669;
+        }
+
+        .score-subtitle {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 0.5rem;
+            background: #e5e7eb;
+            border-radius: 9999px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #059669;
+            border-radius: 9999px;
+            transition: width 0.3s;
+        }
+
+        .question-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 1.5rem;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin: 1.5rem 0;
+        }
+
+        .option {
+            padding: 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .option:hover {
+            border-color: #3b82f6;
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+        }
+
+        .option.selected {
+            border-color: #3b82f6;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+        }
+
+        .option.correct {
+            border-color: #059669;
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            color: white;
+        }
+
+        .option.incorrect {
+            border-color: #dc2626;
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+        }
+
+        .option-label {
+            font-weight: 500;
+            margin-right: 0.75rem;
+        }
+
+        .explanation {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: #dbeafe;
+            border-radius: 0.5rem;
+            display: none;
+        }
+
+        .explanation.show {
+            display: block;
+        }
+
+        .explanation-title {
+            color: #1e40af;
+            margin-bottom: 0.5rem;
+        }
+
+        .explanation-text {
+            color: #1e3a8a;
+            font-size: 0.875rem;
+        }
+
+        .center {
+            text-align: center;
+            margin: 1.5rem 0;
+        }
+
+        .final-score {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #3b82f6;
+            margin: 1.5rem 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .score-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.25rem;
+            margin: 1.5rem 0;
+        }
+
+        .score-item {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            text-align: center;
+        }
+
+        .score-item h3 {
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+        }
+
+        .score-item .score {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #3b82f6;
+        }
+
+        .feedback {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            margin: 1.5rem 0;
+        }
+
+        .feedback h3 {
+            margin-bottom: 0.75rem;
+            color: #333;
+        }
+
+        .recommendations {
+            text-align: left;
+            margin: 1rem 0;
+        }
+
+        .recommendations li {
+            margin: 0.5rem 0;
+            padding-left: 1.25rem;
+            position: relative;
+        }
+
+        .recommendations li::before {
+            content: '🚀';
+            position: absolute;
+            left: 0;
+        }
+
+        .hidden { display: none; }
+
+        @media (max-width: 768px) {
+            .container { padding-top: 80px; }
+            .back-to-menu {
+                position: relative;
+                top: 0;
+                left: 0;
+                margin-bottom: 20px;
+            }
+            .header-title h1 { font-size: 2rem; }
+            .categories-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Back to main menu button -->
+    <button class="back-to-menu" onclick="window.location.href='../../index.html'">
+        ← Back to Games
+    </button>
+
+    <div class="container">
+        <!-- Menu Screen -->
+        <div id="menuScreen">
+            <div class="header">
+                <div class="header-title">
+                    <span class="icon">🌍</span>
+                    <h1>EcoTrivia Challenge</h1>
+                    <span class="icon">🌱</span>
+                </div>
+                <p class="subtitle">Test your knowledge about climate science and sustainability!</p>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">Choose Your Challenge</h2>
+                
+                <div class="categories-grid" id="categoriesGrid">
+                    <button class="category-btn active all" data-category="all">
+                        <div class="category-name">🌍 All Topics</div>
+                        <div class="question-count">10 questions</div>
+                    </button>
+                    <button class="category-btn climate" data-category="climate">
+                        <div class="category-name">🌍 Climate Science</div>
+                        <div class="question-count">3 questions</div>
+                    </button>
+                    <button class="category-btn energy" data-category="energy">
+                        <div class="category-name">⚡ Renewable Energy</div>
+                        <div class="question-count">3 questions</div>
+                    </button>
+                    <button class="category-btn sustainability" data-category="sustainability">
+                        <div class="category-name">🌱 Sustainability</div>
+                        <div class="question-count">2 questions</div>
+                    </button>
+                    <button class="category-btn recycling" data-category="recycling">
+                        <div class="category-name">♻️ Recycling & Waste</div>
+                        <div class="question-count">2 questions</div>
+                    </button>
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">Enter Your Name</label>
+                    <input type="text" id="playerName" class="input-field" placeholder="Your name here..." />
+                    <button id="startBtn" class="btn btn-primary btn-full" style="margin-top: 1rem;">
+                        Start Quiz
+                    </button>
+                </div>
+            </div>
+
+            <div class="center">
+                <button id="leaderboardBtn" class="btn btn-secondary">
+                    🏆 View Leaderboard
+                </button>
+            </div>
+        </div>
+
+        <!-- Playing Screen -->
+        <div id="playingScreen" class="hidden">
+            <div class="card">
+                <div class="question-header">
+                    <div class="category-badge" id="currentCategory">
+                        <span id="categoryIcon">🌍</span>
+                        <span id="categoryName">Climate Science</span>
+                    </div>
+                    <div class="score-display">
+                        <div class="score-points" id="scorePoints">0 pts</div>
+                        <div class="score-subtitle" id="questionProgress">Question 1 of 10</div>
+                    </div>
+                </div>
+
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                
+                <h2 class="question-text" id="questionText">Loading question...</h2>
+
+                <div class="options" id="optionsContainer">
+                    <!-- Options will be inserted here -->
+                </div>
+
+                <div id="explanation" class="explanation">
+                    <p class="explanation-title"><strong id="resultText">✓ Correct!</strong></p>
+                    <p class="explanation-text" id="explanationText">Explanation will appear here...</p>
+                </div>
+
+                <div class="center">
+                    <button id="nextBtn" class="btn btn-primary" disabled>Next Question</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Over Screen -->
+        <div id="gameOverScreen" class="hidden">
+            <div class="card center">
+                <span class="icon" style="font-size: 4rem;">🏆</span>
+                <h1 style="font-size: 1.875rem; font-weight: bold; color: #1f2937; margin-bottom: 0.5rem;">Quiz Complete!</h1>
+                <p style="color: #6b7280; margin-bottom: 1.5rem;">Great job, <span id="finalPlayerName">Player</span>!</p>
+                
+                <div style="background: #f0fdf4; border-radius: 0.5rem; padding: 1.5rem; margin-bottom: 1.5rem;">
+                    <div class="final-score" id="finalScore">0</div>
+                    <div style="color: #6b7280;">Total Points</div>
+                    <div style="font-size: 0.875rem; color: #9ca3af; margin-top: 0.5rem;" id="gameDetails">
+                        All Topics • 10 questions
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 1rem; justify-content: center;">
+                    <button id="playAgainBtn" class="btn btn-primary">
+                        🔄 Play Again
+                    </button>
+                    <button id="viewLeaderboardBtn" class="btn btn-secondary">
+                        🏆 Leaderboard
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Leaderboard Screen -->
+        <div id="leaderboardScreen" class="hidden">
+            <div class="card">
+                <div class="center" style="margin-bottom: 2rem;">
+                    <span class="icon" style="font-size: 2rem; color: #eab308;">🏆</span>
+                    <h1 style="font-size: 1.875rem; font-weight: bold; color: #1f2937;">Leaderboard</h1>
+                </div>
+
+                <div id="leaderboardContent">
+                    <div class="center" style="padding: 3rem 0;">
+                        <span class="icon" style="font-size: 4rem; color: #d1d5db;">🏆</span>
+                        <p style="color: #9ca3af; margin: 1.5rem 0;">No scores yet! Be the first to play.</p>
+                        <button id="startPlayingBtn" class="btn btn-primary">Start Playing</button>
+                    </div>
+                </div>
+
+                <div class="center" style="margin-top: 2rem;">
+                    <button id="backToMenuBtn" class="btn btn-primary">Play Again</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Game state
+        let gameState = 'menu'; // 'menu', 'playing', 'gameOver', 'leaderboard'
+        let playerName = '';
+        let currentQuestion = 0;
+        let score = 0;
+        let selectedAnswer = null;
+        let showResult = false;
+        let leaderboard = [];
+        let selectedCategory = 'all';
+
+        // Questions database
+        const questions = [
+            {
+                category: "climate",
+                icon: "🌍",
+                question: "What is the main greenhouse gas responsible for climate change?",
+                options: ["Oxygen", "Carbon Dioxide", "Nitrogen", "Hydrogen"],
+                correct: 1,
+                explanation: "CO2 is the primary greenhouse gas from human activities, trapping heat in the atmosphere."
+            },
+            {
+                category: "energy",
+                icon: "⚡",
+                question: "Which renewable energy source generates the most electricity globally?",
+                options: ["Solar", "Wind", "Hydroelectric", "Geothermal"],
+                correct: 2,
+                explanation: "Hydroelectric power currently generates the most renewable electricity worldwide."
+            },
+            {
+                category: "sustainability",
+                icon: "🌱",
+                question: "How long does it take for a plastic bottle to decompose in nature?",
+                options: ["10 years", "50 years", "450 years", "1000 years"],
+                correct: 2,
+                explanation: "Plastic bottles can take up to 450 years to fully decompose in the environment."
+            },
+            {
+                category: "recycling",
+                icon: "♻️",
+                question: "What percentage of the world's plastic waste gets recycled?",
+                options: ["Less than 10%", "About 25%", "Around 50%", "Over 75%"],
+                correct: 0,
+                explanation: "Sadly, less than 10% of all plastic ever produced has been recycled."
+            },
+            {
+                category: "climate",
+                icon: "🌍",
+                question: "What is the Paris Agreement's main temperature goal?",
+                options: ["Keep warming under 3°C", "Keep warming under 2°C", "Keep warming under 1°C", "Stop all warming"],
+                correct: 1,
+                explanation: "The Paris Agreement aims to limit global warming to well below 2°C above pre-industrial levels."
+            },
+            {
+                category: "energy",
+                icon: "⚡",
+                question: "Which activity uses the most energy in a typical home?",
+                options: ["Lighting", "Heating/Cooling", "Water heating", "Electronics"],
+                correct: 1,
+                explanation: "Heating and cooling systems typically account for about 50% of home energy use."
+            },
+            {
+                category: "sustainability",
+                icon: "🌱",
+                question: "Which transportation method has the lowest carbon footprint per mile?",
+                options: ["Electric car", "Bus", "Train", "Bicycle"],
+                correct: 3,
+                explanation: "Bicycles have virtually zero carbon emissions and are the most sustainable transport option."
+            },
+            {
+                category: "recycling",
+                icon: "♻️",
+                question: "Which material can be recycled indefinitely without losing quality?",
+                options: ["Paper", "Plastic", "Glass", "Cardboard"],
+                correct: 2,
+                explanation: "Glass can be recycled endlessly without any loss in quality or purity."
+            },
+            {
+                category: "climate",
+                icon: "🌍",
+                question: "What causes ocean acidification?",
+                options: ["Plastic pollution", "CO2 absorption", "Oil spills", "Overfishing"],
+                correct: 1,
+                explanation: "Oceans absorb CO2 from the atmosphere, forming carbonic acid and lowering pH levels."
+            },
+            {
+                category: "energy",
+                icon: "⚡",
+                question: "Which country generates the most solar energy?",
+                options: ["Germany", "United States", "China", "Japan"],
+                correct: 2,
+                explanation: "China leads the world in solar energy generation, producing over 30% of global solar power."
+            }
+        ];
+
+        const categories = {
+            all: { name: 'All Topics', icon: '🌍' },
+            climate: { name: 'Climate Science', icon: '🌍' },
+            energy: { name: 'Renewable Energy', icon: '⚡' },
+            sustainability: { name: 'Sustainability', icon: '🌱' },
+            recycling: { name: 'Recycling & Waste', icon: '♻️' }
+        };
+
+        // Initialize game
+        function initGame() {
+            setupEventListeners();
+            showScreen('menu');
+        }
+
+        function setupEventListeners() {
+            // Category buttons
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.addEventListener('click', () => selectCategory(btn.dataset.category));
+            });
+
+            // Start button
+            document.getElementById('startBtn').addEventListener('click', startGame);
+            
+            // Navigation buttons
+            document.getElementById('nextBtn').addEventListener('click', nextQuestion);
+            document.getElementById('playAgainBtn').addEventListener('click', resetGame);
+            document.getElementById('leaderboardBtn').addEventListener('click', () => showScreen('leaderboard'));
+            document.getElementById('viewLeaderboardBtn').addEventListener('click', () => showScreen('leaderboard'));
+            document.getElementById('startPlayingBtn').addEventListener('click', resetGame);
+            document.getElementById('backToMenuBtn').addEventListener('click', resetGame);
+
+            // Enter key for name input
+            document.getElementById('playerName').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') startGame();
+            });
+        }
+
+        function selectCategory(category) {
+            selectedCategory = category;
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.category === category) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        function getFilteredQuestions() {
+            if (selectedCategory === 'all') return questions;
+            return questions.filter(q => q.category === selectedCategory);
+        }
+
+        function startGame() {
+            const nameInput = document.getElementById('playerName');
+            if (!nameInput.value.trim()) {
+                nameInput.focus();
+                return;
+            }
+            
+            playerName = nameInput.value.trim();
+            const filtered = getFilteredQuestions();
+            currentQuestion = 0;
+            score = 0;
+            selectedAnswer = null;
+            showResult = false;
+            showScreen('playing');
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const filtered = getFilteredQuestions();
+            const question = filtered[currentQuestion];
+            
+            // Update category display
+            document.getElementById('categoryIcon').textContent = question.icon;
+            document.getElementById('categoryName').textContent = categories[question.category].name;
+            
+            // Update score and progress
+            document.getElementById('scorePoints').textContent = `${score} pts`;
+            document.getElementById('questionProgress').textContent = `Question ${currentQuestion + 1} of ${filtered.length}`;
+            
+            // Update progress bar
+            const progress = ((currentQuestion + 1) / filtered.length) * 100;
+            document.getElementById('progressFill').style.width = `${progress}%`;
+            
+            // Update question text
+            document.getElementById('questionText').textContent = question.question;
+            
+            // Create options
+            const container = document.getElementById('optionsContainer');
+            container.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option';
+                optionDiv.innerHTML = `
+                    <span class="option-label">${String.fromCharCode(65 + index)}.</span>
+                    ${option}
+                `;
+                optionDiv.addEventListener('click', () => selectAnswer(index));
+                container.appendChild(optionDiv);
+            });
+            
+            // Reset UI
+            document.getElementById('explanation').classList.remove('show');
+            document.getElementById('nextBtn').disabled = true;
+            selectedAnswer = null;
+            showResult = false;
+        }
+
+        function selectAnswer(answerIndex) {
+            if (showResult) return;
+            
+            const filtered = getFilteredQuestions();
+            const question = filtered[currentQuestion];
+            const options = document.querySelectorAll('.option');
+            
+            selectedAnswer = answerIndex;
+            showResult = true;
+            
+            // Disable all options
+            options.forEach(option => option.style.pointerEvents = 'none');
+            
+            // Show results
+            setTimeout(() => {
+                options.forEach((option, index) => {
+                    option.classList.remove('selected', 'correct', 'incorrect');
+                    if (index === question.correct) {
+                        option.classList.add('correct');
+                    } else if (index === selectedAnswer && index !== question.correct) {
+                        option.classList.add('incorrect');
+                    }
+                });
+                
+                // Update score
+                if (answerIndex === question.correct) {
+                    score += 100;
+                    document.getElementById('scorePoints').textContent = `${score} pts`;
+                }
+                
+                // Show explanation
+                document.getElementById('resultText').textContent = 
+                    answerIndex === question.correct ? '✓ Correct!' : '✗ Incorrect';
+                document.getElementById('explanationText').textContent = question.explanation;
+                document.getElementById('explanation').classList.add('show');
+                document.getElementById('nextBtn').disabled = false;
+            }, 500);
+        }
+
+        function nextQuestion() {
+            const filtered = getFilteredQuestions();
+            if (currentQuestion + 1 < filtered.length) {
+                currentQuestion++;
+                showQuestion();
+            } else {
+                endGame();
+            }
+        }
+
+        function endGame() {
+            const filtered = getFilteredQuestions();
+            const finalScore = score;
+            
+            // Add to leaderboard
+            const newScore = {
+                name: playerName,
+                score: finalScore,
+                category: categories[selectedCategory].name,
+                questions: filtered.length,
+                date: new Date().toLocaleDateString()
+            };
+            
+            leaderboard.push(newScore);
+            leaderboard.sort((a, b) => b.score - a.score);
+            leaderboard = leaderboard.slice(0, 10);
+            
+            // Update final score display
+            document.getElementById('finalScore').textContent = finalScore;
+            document.getElementById('finalPlayerName').textContent = playerName;
+            document.getElementById('gameDetails').textContent = 
+                `${categories[selectedCategory].name} • ${filtered.length} questions`;
+            
+            showScreen('gameOver');
+        }
+
+        function resetGame() {
+            gameState = 'menu';
+            playerName = '';
+            currentQuestion = 0;
+            score = 0;
+            selectedAnswer = null;
+            showResult = false;
+            selectedCategory = 'all';
+            
+            document.getElementById('playerName').value = '';
+            selectCategory('all');
+            showScreen('menu');
+        }
+
+        function showScreen(screen) {
+            gameState = screen;
+            
+            document.getElementById('menuScreen').classList.toggle('hidden', screen !== 'menu');
+            document.getElementById('playingScreen').classList.toggle('hidden', screen !== 'playing');
+            document.getElementById('gameOverScreen').classList.toggle('hidden', screen !== 'gameOver');
+            document.getElementById('leaderboardScreen').classList.toggle('hidden', screen !== 'leaderboard');
+            
+            if (screen === 'leaderboard') {
+                showLeaderboard();
+            }
+        }
+
+        function showLeaderboard() {
+            const content = document.getElementById('leaderboardContent');
+            
+            if (leaderboard.length === 0) {
+                content.innerHTML = `
+                    <div class="center" style="padding: 3rem 0;">
+                        <span class="icon" style="font-size: 4rem; color: #d1d5db;">🏆</span>
+                        <p style="color: #9ca3af; margin: 1.5rem 0;">No scores yet! Be the first to play.</p>
+                        <button id="startPlayingBtn" class="btn btn-primary">Start Playing</button>
+                    </div>
+                `;
+                document.getElementById('startPlayingBtn').addEventListener('click', resetGame);
+            } else {
+                let html = '<div style="display: flex; flex-direction: column; gap: 0.75rem;">';
+                
+                leaderboard.forEach((entry, index) => {
+                    const bgClass = index === 0 ? 'background: #fef3c7; border: 2px solid #f59e0b;' :
+                                   index === 1 ? 'background: #f3f4f6; border: 2px solid #d1d5db;' :
+                                   index === 2 ? 'background: #fed7aa; border: 2px solid #fb923c;' :
+                                   'background: white; border: 1px solid #e5e7eb;';
+                    
+                    const rankBg = index === 0 ? 'background: #f59e0b; color: white;' :
+                                  index === 1 ? 'background: #9ca3af; color: white;' :
+                                  index === 2 ? 'background: #fb923c; color: white;' :
+                                  'background: #e5e7eb; color: #6b7280;';
+                    
+                    html += `
+                        <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; border-radius: 0.5rem; ${bgClass}">
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <div style="width: 2rem; height: 2rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.875rem; ${rankBg}">
+                                    ${index + 1}
+                                </div>
+                                <div>
+                                    <div style="font-weight: 500; color: #1f2937;">${entry.name}</div>
+                                    <div style="font-size: 0.875rem; color: #6b7280;">
+                                        ${entry.category} • ${entry.date}
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="font-weight: bold; font-size: 1.125rem; color: #1f2937;">${entry.score}</div>
+                                <div style="font-size: 0.875rem; color: #6b7280;">${entry.questions} questions</div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += '</div>';
+                content.innerHTML = html;
+            }
+        }
+
+        // Initialize the game
+        initGame();
+    </script>
+</body>
+</html> 

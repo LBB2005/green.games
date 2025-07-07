@@ -18,6 +18,27 @@ const GAMES = [
         description: 'Discover the hidden carbon footprints in everyday choices through this interactive quiz game!',
         icon: '🕵️',
         url: 'games/carbon-detective/index.html'
+    },
+    {
+        id: 'ready-or-not',
+        title: 'Ready or Not?',
+        description: 'Test your AI readiness knowledge with this engaging quiz about brand availability, depth, and clarity!',
+        icon: '🐱',
+        url: 'games/ready-or-not/index.html'
+    },
+    {
+        id: 'ev-road-race',
+        title: 'EV Road Race',
+        description: 'Drive your electric vehicle through traffic while managing battery life and collecting charging stations!',
+        icon: '⚡',
+        url: 'games/ev-road-race/index.html'
+    },
+    {
+        id: 'climate-trivia',
+        title: 'EcoTrivia Challenge',
+        description: 'Test your knowledge about climate science, renewable energy, and sustainability in this comprehensive quiz!',
+        icon: '🌍',
+        url: 'games/climate-trivia/index.html'
     }
     // Example of how to add more games:
     // {
