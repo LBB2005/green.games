@@ -8,10 +8,12 @@
     --primary-green: #059669;
     --secondary-green: #047857;
     --dark-green: #022c22;
+    --darker-green: #011611;
     --light-green: #6ee7b7;
     --accent-blue: #3b82f6;
-    --background-dark: #0f172a;
-    --background-card: #1e293b;
+    --background-dark: #011611;
+    --background-card: #022c22;
+    --background-mid: #033020;
     --text-primary: #f8fafc;
     --text-secondary: #cbd5e1;
     --text-muted: #94a3b8;
@@ -51,7 +53,7 @@ body {
     top: 0;
     left: 0;
     right: 0;
-    background: rgba(15, 23, 42, 0.95);
+    background: rgba(1, 22, 17, 0.95);
     backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--border-color);
     z-index: 1000;
@@ -152,8 +154,8 @@ body {
     background: linear-gradient(
         to bottom,
         transparent 0%,
-        rgba(6, 78, 59, 0.3) 50%,
-        rgba(6, 78, 59, 0.8) 100%
+        rgba(2, 44, 34, 0.3) 50%,
+        rgba(2, 44, 34, 0.8) 100%
     );
     pointer-events: none;
 }
@@ -354,9 +356,9 @@ body {
     padding: 120px 0;
     background: linear-gradient(
         to bottom,
-        var(--dark-green) 0%,
-        var(--background-card) 20%,
-        var(--background-card) 100%
+        var(--background-card) 0%,
+        var(--background-mid) 50%,
+        var(--background-dark) 100%
     );
     position: relative;
 }
@@ -370,8 +372,8 @@ body {
     height: 100px;
     background: linear-gradient(
         to bottom,
-        rgba(6, 78, 59, 0.8) 0%,
-        rgba(6, 78, 59, 0.4) 50%,
+        rgba(2, 44, 34, 0.8) 0%,
+        rgba(3, 48, 32, 0.4) 50%,
         transparent 100%
     );
     pointer-events: none;
@@ -714,9 +716,9 @@ body {
     padding: 120px 0;
     background: linear-gradient(
         to bottom,
-        var(--background-card) 0%,
-        var(--background-dark) 30%,
-        var(--background-dark) 100%
+        var(--background-dark) 0%,
+        var(--darker-green) 30%,
+        var(--darker-green) 100%
     );
     position: relative;
 }
@@ -730,7 +732,7 @@ body {
     height: 80px;
     background: linear-gradient(
         to bottom,
-        rgba(30, 41, 59, 0.8) 0%,
+        rgba(1, 22, 17, 0.8) 0%,
         transparent 100%
     );
     pointer-events: none;
@@ -798,9 +800,9 @@ body {
     padding: 120px 0;
     background: linear-gradient(
         to bottom,
-        var(--background-dark) 0%,
+        var(--darker-green) 0%,
         var(--background-card) 25%,
-        var(--background-card) 100%
+        var(--background-mid) 100%
     );
     position: relative;
 }
@@ -814,7 +816,7 @@ body {
     height: 80px;
     background: linear-gradient(
         to bottom,
-        rgba(15, 23, 42, 0.8) 0%,
+        rgba(1, 22, 17, 0.8) 0%,
         transparent 100%
     );
     pointer-events: none;
@@ -1004,7 +1006,29 @@ body {
 /* Games Section */
 .games-section {
     padding: 100px 0;
-    background: var(--background-dark);
+    background: linear-gradient(
+        to bottom,
+        var(--dark-green) 0%,
+        var(--background-mid) 50%,
+        var(--background-card) 100%
+    );
+    position: relative;
+}
+
+.games-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 120px;
+    background: linear-gradient(
+        to bottom,
+        rgba(2, 44, 34, 0.8) 0%,
+        rgba(3, 48, 32, 0.6) 50%,
+        transparent 100%
+    );
+    pointer-events: none;
 }
 
 .section-title {
