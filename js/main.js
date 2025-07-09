@@ -581,6 +581,39 @@ function injectAnimationStyles() {
     document.head.appendChild(style);
 }
 
+/**
+ * Global navigation function for hero feature clicks
+ * Provides smooth scrolling to target sections with visual feedback
+ * @param {string} targetSection - The section ID to navigate to (e.g., '#games', '#about', '#features')
+ */
+function navigateToSection(targetSection) {
+    Logger.info('Hero feature navigation triggered', { target: targetSection });
+    
+    // Remove the # symbol if present
+    const sectionId = targetSection.replace('#', '');
+    
+    // Use the app's scrollToSection method for smooth navigation
+    if (window.app && window.app.scrollToSection) {
+        window.app.scrollToSection(sectionId);
+    } else {
+        // Fallback for immediate navigation if app not ready
+        const targetElement = document.getElementById(sectionId);
+        if (targetElement) {
+            const navbarHeight = 70; // Standard navbar height
+            const targetPosition = targetElement.offsetTop - navbarHeight;
+            
+            window.scrollTo({
+                top: targetPosition,
+                behavior: 'smooth'
+            });
+            
+            Logger.debug('Fallback navigation completed', { sectionId });
+        } else {
+            Logger.warn('Target section not found for navigation', { sectionId });
+        }
+    }
+}
+
 // Initialize the application when the script loads
 Logger.info('Loading Green Games main script');
 
@@ -589,6 +622,9 @@ injectAnimationStyles();
 
 // Initialize the main application
 const app = new GreenGamesApp();
+
+// Expose app globally for navigation function
+window.app = app;
 
 // Expose app instance globally for debugging (development only)
 if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
