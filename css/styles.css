@@ -126,7 +126,9 @@ body {
     background: linear-gradient(
         135deg, 
         var(--dark-green) 0%,
-        var(--primary-green) 50%,
+        var(--primary-green) 30%,
+        rgba(2, 44, 34, 0.9) 50%,
+        var(--primary-green) 70%,
         var(--dark-green) 100%
     );
     position: relative;
@@ -165,16 +167,22 @@ body {
     max-width: 800px;
     z-index: 2;
     position: relative;
+    padding: 2rem;
+    border-radius: 20px;
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .hero h1 {
     font-size: 4rem;
     font-weight: 800;
     margin-bottom: 1.5rem;
-    background: linear-gradient(135deg, var(--light-green), var(--primary-green), var(--accent-blue));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #ffffff;
+    text-shadow: 
+        0 0 20px rgba(0, 0, 0, 0.8),
+        0 4px 8px rgba(0, 0, 0, 0.6),
+        0 2px 4px rgba(0, 0, 0, 0.4);
     animation: fadeInUp 1s ease-out;
 }
 
