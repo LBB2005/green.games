@@ -39,6 +39,34 @@ const GAMES = [
         description: 'Test your knowledge about climate science, renewable energy, and sustainability in this comprehensive quiz!',
         icon: '🌍',
         url: 'games/climate-trivia/index.html'
+    },
+    {
+        id: 'greenwash-detective',
+        title: 'Greenwash Detective',
+        description: 'Become a sustainability detective! Investigate corporate environmental claims and uncover greenwashing tactics.',
+        icon: '🕵️',
+        url: 'games/greenwash-detective/index.html'
+    },
+    {
+        id: 'regen-rangers',
+        title: 'Regen Rangers',
+        description: 'Restore degraded land through regenerative practices. Plant seeds, improve soil health, and rebuild ecosystems.',
+        icon: '🌱',
+        url: 'games/regen-rangers/index.html'
+    },
+    {
+        id: 'compost-quest',
+        title: 'Compost Quest',
+        description: 'Master the art of composting! Mix organic materials in perfect ratios to create nutrient-rich soil.',
+        icon: '🍂',
+        url: 'games/compost-quest/index.html'
+    },
+    {
+        id: 'carbon-clash',
+        title: 'Carbon Clash',
+        description: 'Strategic card game where you compete to reduce your city\'s carbon footprint using technology, policy, and lifestyle changes.',
+        icon: '⚡',
+        url: 'games/carbon-clash/index.html'
     }
     // Example of how to add more games:
     // {

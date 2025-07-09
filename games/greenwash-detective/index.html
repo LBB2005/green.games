@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Greenwash Detective</title>
+    <style>
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: #4a8c3a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            z-index: 1001;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .back-button:hover {
+            background: #67b348;
+            transform: translateY(-2px);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2d5a27 0%, #1a3d1a 100%);
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        .phone-container {
+            width: 320px;
+            height: 640px;
+            margin: 20px auto;
+            background: #000;
+            border-radius: 25px;
+            padding: 10px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        .screen {
+            width: 100%;
+            height: 100%;
+            background: #1a1a1a;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .header {
+            background: linear-gradient(45deg, #2d5a27, #4a8c3a);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .logo {
+            font-size: 18px;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .detective-icon {
+            font-size: 24px;
+        }
+
+        .stats {
+            display: flex;
+            gap: 15px;
+            font-size: 12px;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .tab-bar {
+            display: flex;
+            background: #2a2a2a;
+            border-bottom: 2px solid #4a8c3a;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px 8px;
+            text-align: center;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+
+        .tab.active {
+            background: #4a8c3a;
+            border-bottom-color: #67b348;
+        }
+
+        .tab:hover {
+            background: #3a3a3a;
+        }
+
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+        }
+
+        .case-card {
+            background: #2a2a2a;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid #ff6b6b;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .case-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        }
+
+        .case-card.solved {
+            border-left-color: #4a8c3a;
+            opacity: 0.8;
+        }
+
+        .case-header {
+            display: flex;
+            justify-content: between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .brand-name {
+            font-weight: bold;
+            color: #ff6b6b;
+            font-size: 16px;
+        }
+
+        .case-card.solved .brand-name {
+            color: #4a8c3a;
+        }
+
+        .difficulty {
+            background: #ff6b6b;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        .claim-preview {
+            font-style: italic;
+            color: #ccc;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .case-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #aaa;
+        }
+
+        .footer {
+            background: #1a1a1a;
+            padding: 10px;
+            text-align: center;
+            font-size: 10px;
+            color: #666;
+            border-top: 1px solid #333;
+        }
+
+        .daily-challenge {
+            background: linear-gradient(45deg, #ff6b6b, #ff9800);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .challenge-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .challenge-reward {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            .phone-container {
+                width: 100vw;
+                height: calc(100vh - 100px);
+                margin: 50px 0 0 0;
+                border-radius: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="../../index.html" class="back-button">← Back to Games</a>
+    
+    <div class="phone-container">
+        <div class="screen">
+            <div class="header">
+                <div class="logo">
+                    <span class="detective-icon">🕵️</span>
+                    Greenwash Detective
+                </div>
+                <div class="stats">
+                    <div class="stat-item">
+                        <span id="casesSolved">23</span>
+                        <span>Cases</span>
+                    </div>
+                    <div class="stat-item">
+                        <span id="accuracy">87%</span>
+                        <span>Accuracy</span>
+                    </div>
+                    <div class="stat-item">
+                        <span id="streak">5</span>
+                        <span>Streak</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-bar">
+                <div class="tab active" data-tab="cases">Cases</div>
+                <div class="tab" data-tab="news">News</div>
+                <div class="tab" data-tab="builder">Builder</div>
+                <div class="tab" data-tab="profile">Profile</div>
+            </div>
+
+            <div class="content">
+                <div class="daily-challenge">
+                    <div class="challenge-title">🎯 Daily Mystery Drop</div>
+                    <div class="challenge-reward">New case available! +50 XP bonus</div>
+                </div>
+
+                <div class="case-card" data-case="1">
+                    <div class="difficulty">Hard</div>
+                    <div class="case-header">
+                        <div class="brand-name">EcoFresh Foods</div>
+                    </div>
+                    <div class="claim-preview">"100% Carbon Neutral by 2030 - Already 90% there!"</div>
+                    <div class="case-meta">
+                        <span>🌱 Sustainability</span>
+                        <span>⏱️ 15 min</span>
+                    </div>
+                </div>
+
+                <div class="case-card solved" data-case="2">
+                    <div class="difficulty">Medium</div>
+                    <div class="case-header">
+                        <div class="brand-name">GreenTech Solutions</div>
+                    </div>
+                    <div class="claim-preview">"Our AI reduces energy consumption by 200%"</div>
+                    <div class="case-meta">
+                        <span>🔋 Energy</span>
+                        <span>✅ Solved</span>
+                    </div>
+                </div>
+
+                <div class="case-card" data-case="3">
+                    <div class="difficulty">Easy</div>
+                    <div class="case-header">
+                        <div class="brand-name">Ocean Plastics Inc</div>
+                    </div>
+                    <div class="claim-preview">"Every bottle saves 10 sea turtles!"</div>
+                    <div class="case-meta">
+                        <span>🌊 Ocean</span>
+                        <span>⏱️ 8 min</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer">
+                This game is part of the Green.Games family of sustainability titles
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simplified game functionality for demo
+        let gameState = {
+            casesSolved: 23,
+            accuracy: 87,
+            streak: 5
+        };
+
+        // Tab switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                showNotification(`Switched to ${this.textContent} tab`);
+            });
+        });
+
+        // Case clicking
+        document.querySelectorAll('.case-card').forEach(card => {
+            card.addEventListener('click', function() {
+                if (!this.classList.contains('solved')) {
+                    showNotification('🕵️ Investigating ' + this.querySelector('.brand-name').textContent);
+                }
+            });
+        });
+
+        function showNotification(message) {
+            const existing = document.querySelector('.notification');
+            if (existing) existing.remove();
+            
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.style.cssText = `
+                position: fixed;
+                top: 100px;
+                right: 20px;
+                background: rgba(50, 205, 50, 0.9);
+                color: white;
+                padding: 15px 20px;
+                border-radius: 10px;
+                font-weight: bold;
+                z-index: 300;
+                animation: slideIn 0.5s ease, fadeOut 0.5s ease 2.5s;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Educational info on load
+        setTimeout(() => {
+            showNotification('💡 Tip: Look for vague terms like "eco-friendly" without specific data!');
+        }, 2000);
+    </script>
+</body>
+</html> 

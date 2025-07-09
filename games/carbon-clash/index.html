@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carbon Clash</title>
+    <style>
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            z-index: 1001;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .back-button:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #0f4c3a 0%, #1e3a8a 100%);
+            min-height: 100vh;
+            color: white;
+        }
+
+        .header {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #10b981;
+        }
+
+        .score {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .score-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 15px;
+        }
+
+        .menu-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 80vh;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .menu-screen h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #10b981;
+        }
+
+        .menu-screen p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            margin: 0.5rem;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            background: linear-gradient(45deg, #10b981, #059669);
+            color: white;
+            transition: transform 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #3b82f6, #1d4ed8);
+        }
+
+        .game-screen {
+            display: none;
+            padding: 1rem;
+        }
+
+        .game-area {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .opponent-area, .player-area {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .city-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 1rem;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .hand {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding: 10px 0;
+        }
+
+        .card {
+            min-width: 150px;
+            height: 200px;
+            background: linear-gradient(145deg, #1f2937, #374151);
+            border-radius: 15px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card.selected {
+            border-color: #10b981;
+            transform: translateY(-10px);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-cost {
+            background: #3b82f6;
+            color: white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .card-type {
+            font-size: 0.7rem;
+            color: #9ca3af;
+            text-transform: uppercase;
+        }
+
+        .card-title {
+            font-weight: bold;
+            margin: 10px 0;
+            color: #10b981;
+        }
+
+        .card-description {
+            font-size: 0.8rem;
+            color: #d1d5db;
+            flex-grow: 1;
+        }
+
+        .card-impact {
+            margin-top: 10px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .impact-positive { color: #10b981; }
+        .impact-negative { color: #ef4444; }
+
+        .tech-card { border-left: 4px solid #3b82f6; }
+        .policy-card { border-left: 4px solid #8b5cf6; }
+        .lifestyle-card { border-left: 4px solid #10b981; }
+
+        .actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .play-btn, .end-turn-btn {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .play-btn {
+            background: linear-gradient(45deg, #10b981, #059669);
+            color: white;
+        }
+
+        .play-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .end-turn-btn {
+            background: linear-gradient(45deg, #f59e0b, #d97706);
+            color: white;
+        }
+
+        .tutorial {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .tutorial-content {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            max-width: 400px;
+        }
+
+        .tutorial h3 {
+            color: #10b981;
+            margin-bottom: 1rem;
+        }
+
+        .tutorial p {
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.5rem;
+            text-align: center;
+            font-size: 0.7rem;
+            color: #9ca3af;
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                min-width: 130px;
+                height: 180px;
+                padding: 12px;
+            }
+            
+            .menu-screen h1 {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="../../index.html" class="back-button">← Back to Games</a>
+    
+    <div class="header">
+        <div class="logo">🌱 Carbon Clash</div>
+        <div class="score">
+            <div class="score-item">CO₂: <span id="playerCO2">500</span></div>
+            <div class="score-item">⚡: <span id="playerEnergy">3</span></div>
+        </div>
+    </div>
+
+    <!-- Menu Screen -->
+    <div class="menu-screen" id="menuScreen">
+        <h1>Carbon Clash</h1>
+        <p>Build a sustainable city and reduce your carbon footprint!</p>
+        <button class="btn" onclick="startTutorial()">🎓 Start Tutorial</button>
+        <button class="btn" onclick="startGame()">🏙️ Solo Campaign</button>
+        <button class="btn btn-secondary" onclick="showInfo()">🌐 About Game</button>
+    </div>
+
+    <!-- Game Screen -->
+    <div class="game-screen" id="gameScreen">
+        <div class="game-area">
+            <!-- Opponent Area -->
+            <div class="opponent-area">
+                <h3>🤖 Opponent's City</h3>
+                <div class="city-stats">
+                    <div class="stat">
+                        <div class="stat-value" id="opponentCO2">750</div>
+                        <div class="stat-label">CO₂ Emissions</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="opponentEnergy">2</div>
+                        <div class="stat-label">Energy</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Player Area -->
+            <div class="player-area">
+                <h3>🏙️ Your City</h3>
+                <div class="city-stats">
+                    <div class="stat">
+                        <div class="stat-value" id="playerCO2Display">500</div>
+                        <div class="stat-label">CO₂ Emissions</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="playerEnergyDisplay">3</div>
+                        <div class="stat-label">Energy</div>
+                    </div>
+                </div>
+                
+                <div class="hand" id="playerHand">
+                    <!-- Cards will be added here -->
+                </div>
+                
+                <div class="actions">
+                    <button class="play-btn" id="playBtn" onclick="playCard()" disabled>Play Card</button>
+                    <button class="end-turn-btn" onclick="endTurn()">End Turn</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tutorial -->
+    <div class="tutorial" id="tutorial">
+        <div class="tutorial-content">
+            <h3 id="tutorialTitle">Welcome to Carbon Clash!</h3>
+            <p id="tutorialText">Your goal is to reduce your city's carbon footprint from 500 to 200 tons of CO₂.</p>
+            <button class="btn" onclick="nextTutorial()">Next</button>
+        </div>
+    </div>
+
+    <div class="footer">
+        This game is part of the Green.Games family of sustainability titles.
+    </div>
+
+    <script>
+        // Simple game state
+        var game = {
+            playerCO2: 500,
+            playerEnergy: 3,
+            opponentCO2: 750,
+            opponentEnergy: 2,
+            selectedCard: null,
+            hand: [],
+            tutorialStep: 0
+        };
+
+        // Card database
+        var cards = [
+            {name: "Solar Panel", type: "tech", cost: 2, co2: -50, energy: 1, desc: "Clean solar energy for your city"},
+            {name: "Wind Turbine", type: "tech", cost: 3, co2: -75, energy: 2, desc: "Harness wind power efficiently"},
+            {name: "Electric Buses", type: "tech", cost: 3, co2: -60, desc: "Replace diesel with electric transport"},
+            {name: "Carbon Tax", type: "policy", cost: 2, co2: -40, desc: "Tax carbon emissions to reduce pollution"},
+            {name: "Green Building", type: "policy", cost: 3, co2: -70, desc: "Mandate sustainable construction"},
+            {name: "Tree Planting", type: "lifestyle", cost: 2, co2: -35, desc: "Community reforestation program"},
+            {name: "Bike Lanes", type: "lifestyle", cost: 2, co2: -40, desc: "Encourage cycling over driving"},
+            {name: "Local Food", type: "lifestyle", cost: 1, co2: -25, desc: "Support local farming initiatives"}
+        ];
+
+        var tutorials = [
+            {title: "Welcome to Carbon Clash!", text: "Your goal is to reduce your city's carbon footprint from 500 to 200 tons of CO₂."},
+            {title: "Playing Cards", text: "Select a card and click 'Play Card' to use it. Each card costs energy and reduces CO₂."},
+            {title: "Energy System", text: "You gain 1 energy each turn. Manage your energy wisely to play powerful cards."},
+            {title: "Winning", text: "First player to reach 200 CO₂ wins! Let's start playing!"}
+        ];
+
+        function updateDisplay() {
+            document.getElementById('playerCO2').textContent = game.playerCO2;
+            document.getElementById('playerEnergy').textContent = game.playerEnergy;
+            document.getElementById('playerCO2Display').textContent = game.playerCO2;
+            document.getElementById('playerEnergyDisplay').textContent = game.playerEnergy;
+            document.getElementById('opponentCO2').textContent = game.opponentCO2;
+            document.getElementById('opponentEnergy').textContent = game.opponentEnergy;
+        }
+
+        function dealCards() {
+            game.hand = [];
+            for (var i = 0; i < 5; i++) {
+                var randomCard = cards[Math.floor(Math.random() * cards.length)];
+                game.hand.push(randomCard);
+            }
+            renderHand();
+        }
+
+        function renderHand() {
+            var handDiv = document.getElementById('playerHand');
+            handDiv.innerHTML = '';
+            
+            for (var i = 0; i < game.hand.length; i++) {
+                var card = game.hand[i];
+                var cardDiv = document.createElement('div');
+                cardDiv.className = 'card ' + card.type + '-card';
+                cardDiv.onclick = function(index) {
+                    return function() { selectCard(index); };
+                }(i);
+                
+                var impactText = '';
+                if (card.co2) impactText += '<span class="impact-positive">CO₂ ' + card.co2 + '</span>';
+                if (card.energy) impactText += '<span class="impact-positive"> ⚡+' + card.energy + '</span>';
+                
+                cardDiv.innerHTML = 
+                    '<div class="card-header">' +
+                        '<div class="card-type">' + card.type + '</div>' +
+                        '<div class="card-cost">' + card.cost + '</div>' +
+                    '</div>' +
+                    '<div class="card-title">' + card.name + '</div>' +
+                    '<div class="card-description">' + card.desc + '</div>' +
+                    '<div class="card-impact">' + impactText + '</div>';
+                
+                handDiv.appendChild(cardDiv);
+            }
+        }
+
+        function selectCard(index) {
+            var cards = document.querySelectorAll('.card');
+            for (var i = 0; i < cards.length; i++) {
+                cards[i].classList.remove('selected');
+            }
+            
+            game.selectedCard = index;
+            cards[index].classList.add('selected');
+            
+            var playBtn = document.getElementById('playBtn');
+            playBtn.disabled = game.playerEnergy < game.hand[index].cost;
+        }
+
+        function playCard() {
+            if (game.selectedCard === null || game.selectedCard === undefined) return;
+            
+            var card = game.hand[game.selectedCard];
+            if (game.playerEnergy < card.cost) return;
+            
+            // Apply effects
+            game.playerEnergy -= card.cost;
+            if (card.co2) game.playerCO2 += card.co2;
+            if (card.energy) game.playerEnergy += card.energy;
+            
+            // Remove card
+            game.hand.splice(game.selectedCard, 1);
+            game.selectedCard = null;
+            
+            // Update display
+            renderHand();
+            updateDisplay();
+            document.getElementById('playBtn').disabled = true;
+            
+            // Check win
+            if (game.playerCO2 <= 200) {
+                setTimeout(function() {
+                    alert('🎉 You won! Your city is carbon neutral!');
+                    showMenu();
+                }, 500);
+            }
+        }
+
+        function endTurn() {
+            // Player gains energy
+            game.playerEnergy = Math.min(game.playerEnergy + 1, 10);
+            
+            // AI plays
+            game.opponentCO2 -= Math.floor(Math.random() * 60) + 20;
+            game.opponentEnergy = Math.min(game.opponentEnergy + 1, 10);
+            
+            // Draw card if hand not full
+            if (game.hand.length < 5) {
+                var randomCard = cards[Math.floor(Math.random() * cards.length)];
+                game.hand.push(randomCard);
+            }
+            
+            renderHand();
+            updateDisplay();
+            
+            // Check opponent win
+            if (game.opponentCO2 <= 200) {
+                setTimeout(function() {
+                    alert('🤖 Opponent won! Try again!');
+                    showMenu();
+                }, 500);
+            }
+        }
+
+        function startGame() {
+            game.playerCO2 = 500;
+            game.playerEnergy = 3;
+            game.opponentCO2 = 750;
+            game.opponentEnergy = 2;
+            game.selectedCard = null;
+            
+            document.getElementById('menuScreen').style.display = 'none';
+            document.getElementById('gameScreen').style.display = 'block';
+            
+            dealCards();
+            updateDisplay();
+        }
+
+        function showMenu() {
+            document.getElementById('menuScreen').style.display = 'flex';
+            document.getElementById('gameScreen').style.display = 'none';
+            document.getElementById('tutorial').style.display = 'none';
+        }
+
+        function startTutorial() {
+            game.tutorialStep = 0;
+            document.getElementById('tutorial').style.display = 'flex';
+            showTutorialStep();
+        }
+
+        function showTutorialStep() {
+            var step = tutorials[game.tutorialStep];
+            document.getElementById('tutorialTitle').textContent = step.title;
+            document.getElementById('tutorialText').textContent = step.text;
+        }
+
+        function nextTutorial() {
+            game.tutorialStep++;
+            if (game.tutorialStep >= tutorials.length) {
+                document.getElementById('tutorial').style.display = 'none';
+                startGame();
+            } else {
+                showTutorialStep();
+            }
+        }
+
+        function showInfo() {
+            alert('🌱 Carbon Clash\n\nA strategic card game where players compete to reduce their city\'s carbon footprint.\n\n🔬 Tech Cards: Solar panels, wind turbines, smart grids\n🏛️ Policy Cards: Carbon taxes, green building codes\n🌱 Lifestyle Cards: Community action, sustainable transport\n\nFirst to reach 200 CO₂ emissions wins!');
+        }
+    </script>
+</body>
+</html> 
