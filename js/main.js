@@ -107,7 +107,7 @@ class GreenGamesApp {
             this.setupNavigation();
             this.setupScrollEffects();
             this.setupAnimations();
-            this.setupInteractiveElements();
+            this.setupGameCards();
             this.setupScrollReveal();
             
             Logger.info('All components initialized successfully');
@@ -275,9 +275,13 @@ class GreenGamesApp {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('animate-in');
                     
-                    // Special handling for stat numbers
-                    if (entry.target.classList.contains('stat-number')) {
-                        this.animateStatNumber(entry.target);
+                    // Special handling for stat values
+                    if (entry.target.classList.contains('stat-card')) {
+                        const statValue = entry.target.querySelector('.stat-value');
+                        if (statValue && !statValue.hasAttribute('data-animated')) {
+                            this.animateStatValue(statValue);
+                            statValue.setAttribute('data-animated', 'true');
+                        }
                     }
                     
                     // Special handling for feature cards
@@ -293,13 +297,12 @@ class GreenGamesApp {
         
         // Observe elements for scroll animations
         const elementsToObserve = document.querySelectorAll([
-            '.about-text h3',
-            '.about-text p',
-            '.stat-item',
+            '.game-card',
+            '.stat-card',
             '.feature-card',
-            '.contact-option',
-            '.planet-animation',
-            '.earth-container'
+            '.contact-card',
+            '.mission-block',
+            '.animated-globe'
         ].join(','));
         
         elementsToObserve.forEach(element => {
@@ -313,10 +316,10 @@ class GreenGamesApp {
     }
     
     /**
-     * Animate stat numbers with counting effect
-     * @param {Element} statElement - The stat number element
+     * Animate stat values with counting effect
+     * @param {Element} statElement - The stat value element
      */
-    animateStatNumber(statElement) {
+    animateStatValue(statElement) {
         const targetText = statElement.textContent;
         const targetNumber = parseInt(targetText.replace(/[^0-9]/g, ''));
         
@@ -369,143 +372,100 @@ class GreenGamesApp {
             });
         });
         
-        // Enhanced planet animation interaction
-        const planetAnimation = document.querySelector('.planet-animation');
-        if (planetAnimation) {
-            planetAnimation.addEventListener('mouseenter', () => {
-                const planet = planetAnimation.querySelector('.planet');
-                const orbits = planetAnimation.querySelectorAll('.orbit');
+        // Enhanced globe animation interaction
+        const animatedGlobe = document.querySelector('.animated-globe');
+        if (animatedGlobe) {
+            animatedGlobe.addEventListener('mouseenter', () => {
+                const globeCore = animatedGlobe.querySelector('.globe-core');
+                const globeRings = animatedGlobe.querySelectorAll('.globe-ring, .globe-ring-2');
                 
-                if (planet) {
-                    planet.style.animationDuration = '5s';
+                if (globeCore) {
+                    globeCore.style.animationDuration = '2s';
                 }
                 
-                orbits.forEach(orbit => {
-                    orbit.style.animationDuration = '3s';
+                globeRings.forEach(ring => {
+                    ring.style.animationDuration = '8s';
                 });
             });
             
-            planetAnimation.addEventListener('mouseleave', () => {
-                const planet = planetAnimation.querySelector('.planet');
-                const orbits = planetAnimation.querySelectorAll('.orbit');
+            animatedGlobe.addEventListener('mouseleave', () => {
+                const globeCore = animatedGlobe.querySelector('.globe-core');
+                const globeRings = animatedGlobe.querySelectorAll('.globe-ring, .globe-ring-2');
                 
-                if (planet) {
-                    planet.style.animationDuration = '20s';
+                if (globeCore) {
+                    globeCore.style.animationDuration = '4s';
                 }
                 
-                orbits.forEach((orbit, index) => {
-                    orbit.style.animationDuration = index === 0 ? '10s' : '15s';
+                globeRings.forEach((ring, index) => {
+                    ring.style.animationDuration = index === 0 ? '20s' : '30s';
                 });
             });
         }
     }
     
     /**
-     * Setup interactive elements and hover effects
-     * Enhances user interaction with visual feedback
+     * Setup game cards with click handlers and interactions
+     * Handles game loading and visual feedback
      */
-    setupInteractiveElements() {
-        Logger.debug('Setting up interactive elements');
+    setupGameCards() {
+        Logger.debug('Setting up game card interactions');
         
-        // Enhanced hero feature interactions
-        const heroFeatures = document.querySelectorAll('.hero-feature');
-        heroFeatures.forEach(feature => {
-            feature.addEventListener('mouseenter', () => {
-                this.handleHeroFeatureHover(feature, true);
-            });
+        const gameCards = document.querySelectorAll('.game-card');
+        gameCards.forEach(card => {
+            const playButton = card.querySelector('.play-button');
+            const gameType = card.getAttribute('data-game');
             
-            feature.addEventListener('mouseleave', () => {
-                this.handleHeroFeatureHover(feature, false);
-            });
-        });
-        
-        // Contact option interactions
-        const contactOptions = document.querySelectorAll('.contact-option');
-        contactOptions.forEach(option => {
-            option.addEventListener('mouseenter', () => {
-                option.style.transform = 'translateX(15px) scale(1.02)';
-            });
-            
-            option.addEventListener('mouseleave', () => {
-                option.style.transform = 'translateX(0) scale(1)';
-            });
-        });
-        
-        // Footer section animations
-        const footerSections = document.querySelectorAll('.footer-section');
-        footerSections.forEach(section => {
-            section.addEventListener('mouseenter', () => {
-                section.style.transform = 'translateY(-5px)';
-            });
-            
-            section.addEventListener('mouseleave', () => {
-                section.style.transform = 'translateY(0)';
-            });
-        });
-    }
-    
-    /**
-     * Handle hero feature hover effects with enhanced animations
-     * @param {Element} feature - The hero feature element
-     * @param {boolean} isHovering - Whether the feature is being hovered
-     */
-    handleHeroFeatureHover(feature, isHovering) {
-        const icon = feature.querySelector('.hero-feature-icon');
-        const featureType = feature.getAttribute('data-feature');
-        
-        if (isHovering) {
-            // Add enhanced hover effects based on feature type
-            if (featureType === 'gaming') {
-                this.triggerParticleEffect(feature);
-            } else if (featureType === 'climate') {
-                this.triggerGlowEffect(feature);
-            } else if (featureType === 'eco') {
-                this.triggerWaveEffect(feature);
+            if (playButton && gameType) {
+                playButton.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    Logger.info('Game button clicked', { game: gameType });
+                    this.loadGame(gameType, card.querySelector('h3').textContent);
+                });
+                
+                // Add enhanced hover effects
+                card.addEventListener('mouseenter', () => {
+                    card.style.transform = 'translateY(-12px)';
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'translateY(-8px)';
+                });
             }
-            
-            Logger.debug('Hero feature hovered', { featureType });
-        }
-    }
-    
-    /**
-     * Trigger particle effect for gaming feature
-     * @param {Element} feature - The feature element
-     */
-    triggerParticleEffect(feature) {
-        const particles = feature.querySelectorAll('.particle');
-        particles.forEach((particle, index) => {
-            setTimeout(() => {
-                particle.style.opacity = '1';
-                particle.style.transform = 'scale(1.5)';
-            }, index * 100);
         });
     }
     
     /**
-     * Trigger glow effect for climate feature
-     * @param {Element} feature - The feature element
+     * Load and display a game in the game player
+     * @param {string} gameType - The type/ID of the game to load
+     * @param {string} gameTitle - The display title of the game
      */
-    triggerGlowEffect(feature) {
-        const glow = feature.querySelector('.feature-glow');
-        if (glow) {
-            glow.style.opacity = '1';
-            glow.style.transform = 'scale(1.1)';
+    loadGame(gameType, gameTitle) {
+        Logger.info('Loading game', { gameType, gameTitle });
+        
+        const gamePlayer = document.getElementById('gamePlayer');
+        const gameFrame = document.getElementById('gameFrame');
+        const currentGameTitle = document.getElementById('currentGameTitle');
+        
+        if (!gamePlayer || !gameFrame || !currentGameTitle) {
+            Logger.error('Game player elements not found');
+            return;
         }
+        
+        // Set game title
+        currentGameTitle.textContent = gameTitle;
+        
+        // Load game iframe
+        const gamePath = `games/${gameType}/index.html`;
+        gameFrame.innerHTML = `<iframe src="${gamePath}" frameborder="0" allowfullscreen></iframe>`;
+        
+        // Show game player
+        gamePlayer.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        
+        Logger.info('Game loaded successfully', { gameType, gamePath });
     }
     
-    /**
-     * Trigger wave effect for eco feature
-     * @param {Element} feature - The feature element
-     */
-    triggerWaveEffect(feature) {
-        const waves = feature.querySelectorAll('.wave');
-        waves.forEach((wave, index) => {
-            setTimeout(() => {
-                wave.style.opacity = '1';
-                wave.style.animation = `waveMove 1.5s ease-in-out infinite`;
-            }, index * 200);
-        });
-    }
+
     
     /**
      * Utility method to check if an element is in viewport
@@ -535,47 +495,42 @@ function injectAnimationStyles() {
             transform: translateY(0) !important;
         }
         
-        .stat-number {
-            font-weight: 800;
-            color: var(--primary-green);
+        /* Enhanced scroll animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.6s ease-out;
         }
         
-        .feature-card {
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
         }
         
-        .contact-option {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+        /* Game card stagger animation */
+        .game-card:nth-child(1) { transition-delay: 0.1s; }
+        .game-card:nth-child(2) { transition-delay: 0.2s; }
+        .game-card:nth-child(3) { transition-delay: 0.3s; }
+        .game-card:nth-child(4) { transition-delay: 0.4s; }
+        .game-card:nth-child(5) { transition-delay: 0.5s; }
+        .game-card:nth-child(6) { transition-delay: 0.6s; }
         
-        .footer-section {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .hero-feature {
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .social-link {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        /* Enhanced particle effects */
-        .particle {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .feature-glow {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .wave {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+        /* Feature card stagger animation */
+        .feature-card:nth-child(1) { transition-delay: 0.1s; }
+        .feature-card:nth-child(2) { transition-delay: 0.2s; }
+        .feature-card:nth-child(3) { transition-delay: 0.3s; }
+        .feature-card:nth-child(4) { transition-delay: 0.4s; }
+        .feature-card:nth-child(5) { transition-delay: 0.5s; }
         
         /* Smooth scrolling enhancement */
         html {
             scroll-behavior: smooth;
+        }
+        
+        /* Keyboard navigation feedback */
+        *:focus {
+            outline: 2px solid var(--primary-green);
+            outline-offset: 2px;
         }
     `;
     document.head.appendChild(style);
@@ -611,6 +566,31 @@ function navigateToSection(targetSection) {
         } else {
             Logger.warn('Target section not found for navigation', { sectionId });
         }
+    }
+}
+
+/**
+ * Global function to close the game player
+ * Hides the game overlay and restores normal page scrolling
+ */
+function closeGame() {
+    Logger.info('Closing game player');
+    
+    const gamePlayer = document.getElementById('gamePlayer');
+    const gameFrame = document.getElementById('gameFrame');
+    
+    if (gamePlayer) {
+        gamePlayer.classList.remove('active');
+        document.body.style.overflow = 'auto';
+        
+        // Clear the game frame after animation
+        setTimeout(() => {
+            if (gameFrame) {
+                gameFrame.innerHTML = '';
+            }
+        }, 300);
+        
+        Logger.info('Game player closed');
     }
 }
 

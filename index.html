@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Green.Games - Play for the Planet</title>
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
     <!-- Navigation -->
@@ -13,9 +16,8 @@
             <div class="logo">Green.Games</div>
             <ul class="nav-links">
                 <li><a href="#home" class="active">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#features">Features</a></li>
                 <li><a href="#games">Games</a></li>
+                <li><a href="#about">About</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
         </div>
@@ -23,41 +25,18 @@
 
     <!-- Hero Section -->
     <section class="hero" id="home">
+        <div class="hero-background">
+            <div class="floating-globe"></div>
+            <div class="eco-particles"></div>
+        </div>
         <div class="container">
             <div class="hero-content">
-                <h1>Green.Games</h1>
-                <p>Play amazing games while learning about our planet. Entertainment that makes a difference.</p>
-                
-                <div class="hero-features">
-                    <div class="hero-feature" data-feature="gaming" data-target="#games" onclick="navigateToSection('#games')">
-                        <div class="hero-feature-icon">🎮</div>
-                        <span>Casual Gaming</span>
-                        <div class="feature-particles">
-                            <div class="particle"></div>
-                            <div class="particle"></div>
-                            <div class="particle"></div>
-                        </div>
-                    </div>
-                    <div class="hero-feature" data-feature="climate" data-target="#about" onclick="navigateToSection('#about')">
-                        <div class="hero-feature-icon">🌍</div>
-                        <span>Climate Awareness</span>
-                        <div class="feature-glow"></div>
-                    </div>
-                    <div class="hero-feature" data-feature="eco" data-target="#features" onclick="navigateToSection('#features')">
-                        <div class="hero-feature-icon">♻️</div>
-                        <span>Eco-Friendly Fun</span>
-                        <div class="feature-waves">
-                            <div class="wave"></div>
-                            <div class="wave"></div>
-                            <div class="wave"></div>
-                        </div>
-                    </div>
+                <h1 class="hero-title">Play for the Planet</h1>
+                <p class="hero-subtitle">Sustainable gaming for a greener future</p>
+                <div class="hero-actions">
+                    <button class="cta-button primary" onclick="navigateToSection('#games')">Start Playing</button>
+                    <button class="cta-button secondary" onclick="navigateToSection('#about')">Learn More</button>
                 </div>
-            </div>
-            <div class="scroll-indicator">
-                <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                </svg>
             </div>
         </div>
     </section>
@@ -65,35 +44,98 @@
     <!-- Games Section -->
     <section class="games-section" id="games">
         <div class="container">
-            <div class="section-title">
+            <div class="section-header">
                 <h2>Eco Adventures</h2>
                 <p>Choose your green gaming adventure</p>
             </div>
 
-            <!-- Dynamic Games Grid -->
-            <div class="games-grid" id="gamesGrid">
-                <!-- Games will be loaded here by JavaScript -->
-            </div>
-
-            <!-- Coming Soon Message -->
-            <div class="coming-soon-message" id="comingSoonMessage">
-                <div class="coming-soon-icon">🚀</div>
-                <h3>Amazing Games Coming Soon!</h3>
-                <p>We're working on incredible eco-friendly games that will be available here soon. Each game will teach you something new about our planet while providing hours of entertainment.</p>
-                <div class="coming-soon-features">
-                    <div class="coming-feature">🌊 Ocean Conservation Adventures</div>
-                    <div class="coming-feature">🌳 Forest Management Simulators</div>
-                    <div class="coming-feature">⚡ Renewable Energy Puzzles</div>
-                    <div class="coming-feature">🏙️ Sustainable City Builders</div>
+            <div class="games-grid">
+                <div class="game-card" data-game="carbon-detective">
+                    <div class="game-icon">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <h3>Carbon Detective</h3>
+                    <p>Discover hidden carbon footprints in daily choices through this interactive quiz.</p>
+                    <button class="play-button">Play Now</button>
                 </div>
-                <small>Perfect for easily adding new games from GitHub!</small>
+
+                <div class="game-card" data-game="ready-or-not">
+                    <div class="game-icon">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <h3>Ready or Not?</h3>
+                    <p>Test your AI readiness with a quiz on brand availability, clarity, and depth.</p>
+                    <button class="play-button">Play Now</button>
+                </div>
+
+                <div class="game-card" data-game="ev-road-race">
+                    <div class="game-icon">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M7 17C7 18.1046 6.10457 19 5 19C3.89543 19 3 18.1046 3 17C3 15.8954 3.89543 15 5 15C6.10457 15 7 15.8954 7 17Z" stroke="currentColor" stroke-width="2"/>
+                            <path d="M21 17C21 18.1046 20.1046 19 19 19C17.8954 19 17 18.1046 17 17C17 15.8954 17.8954 15 19 15C20.1046 15 21 15.8954 21 17Z" stroke="currentColor" stroke-width="2"/>
+                            <path d="M7 17H17M5 17H3L4 13L6 5H18L19 8H20L21 17H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M13 6V7.5M16 6V7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <h3>EV Road Race</h3>
+                    <p>Navigate traffic in your electric vehicle while managing battery life and charging stops.</p>
+                    <button class="play-button">Play Now</button>
+                </div>
+
+                <div class="game-card" data-game="climate-trivia">
+                    <div class="game-icon">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                            <path d="M9.09 9C9.3251 8.33167 9.78915 7.76811 10.4 7.40913C11.0108 7.05016 11.7289 6.91894 12.4272 7.03871C13.1255 7.15849 13.7588 7.52152 14.2151 8.06353C14.6713 8.60553 14.9211 9.29152 14.92 10C14.92 12 11.92 13 11.92 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M12 17H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <h3>EcoTrivia Challenge</h3>
+                    <p>Quiz yourself on climate science, renewable energy, and sustainability knowledge.</p>
+                    <button class="play-button">Play Now</button>
+                </div>
+
+                <div class="game-card" data-game="greenwash-detective">
+                    <div class="game-icon">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
+                            <path d="M21 21L16.65 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M11 8C10 8 9 9 9 10C9 11 10 12 11 12C12 12 13 11 13 10C13 9 12 8 11 8Z" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <h3>Greenwash Detective</h3>
+                    <p>Investigate misleading environmental claims and expose corporate greenwashing.</p>
+                    <button class="play-button">Play Now</button>
+                </div>
+
+                <div class="game-card" data-game="regen-rangers">
+                    <div class="game-icon">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 22C12 22 20 18 20 12V5L12 2L4 5V12C4 18 12 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <h3>Regen Rangers</h3>
+                    <p>Restore degraded land through regenerative farming and ecosystem repair.</p>
+                    <button class="play-button">Play Now</button>
+                </div>
             </div>
 
             <!-- Game Player -->
             <div class="game-player" id="gamePlayer">
                 <div class="game-header">
                     <div class="game-title" id="currentGameTitle">Game Title</div>
-                    <button class="close-button" onclick="closeGame()">Close Game</button>
+                    <button class="close-button" onclick="closeGame()">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
                 </div>
                 <div class="game-frame" id="gameFrame">
                     <!-- Games will load here -->
@@ -102,54 +144,24 @@
         </div>
     </section>
 
-    <!-- About Section -->
-    <section class="about-section" id="about">
+    <!-- Stats Section -->
+    <section class="stats-section">
         <div class="container">
-            <div class="section-title">
-                <h2>About Green.Games</h2>
-                <p>Where entertainment meets environmental education</p>
-            </div>
-            
-            <div class="about-content">
-                <div class="about-text">
-                    <h3>Our Mission</h3>
-                    <p>We believe that gaming can be a powerful tool for positive change. Green.Games combines the excitement of interactive entertainment with meaningful environmental education, creating experiences that are both fun and impactful.</p>
-                    
-                    <h3>What Makes Us Different</h3>
-                    <p>Every game on our platform is designed with environmental themes, teaching players about sustainability, climate change, and conservation while they play. We're not just creating games – we're building a community of environmentally conscious gamers.</p>
-                    
-                    <div class="about-stats">
-                        <div class="stat-item climate-stat">
-                            <div class="stat-icon">🌡️</div>
-                            <div class="stat-number">1.1°C</div>
-                            <div class="stat-label">Global Temperature Rise Since 1880</div>
-                            <div class="stat-trend">↗️ Rising</div>
-                        </div>
-                        <div class="stat-item ocean-stat">
-                            <div class="stat-icon">🌊</div>
-                            <div class="stat-number">8M</div>
-                            <div class="stat-label">Tons of Plastic Enter Oceans Yearly</div>
-                            <div class="stat-trend">⚠️ Critical</div>
-                        </div>
-                        <div class="stat-item forest-stat">
-                            <div class="stat-icon">🌳</div>
-                            <div class="stat-number">10M</div>
-                            <div class="stat-label">Hectares of Forest Lost Annually</div>
-                            <div class="stat-trend">📉 Declining</div>
-                        </div>
-                    </div>
+            <div class="stats-grid">
+                <div class="stat-card climate-stat">
+                    <div class="stat-value">1.1°C</div>
+                    <div class="stat-label">Global Temperature Rise Since 1880</div>
+                    <div class="stat-trend rising">Rising</div>
                 </div>
-                
-                <div class="about-visual">
-                    <div class="planet-animation">
-                        <div class="planet">🌍</div>
-                        <div class="orbit">
-                            <div class="satellite">🛰️</div>
-                        </div>
-                        <div class="orbit orbit-2">
-                            <div class="satellite">♻️</div>
-                        </div>
-                    </div>
+                <div class="stat-card ocean-stat">
+                    <div class="stat-value">8M</div>
+                    <div class="stat-label">Tons of Plastic Enter Oceans Yearly</div>
+                    <div class="stat-trend critical">Critical</div>
+                </div>
+                <div class="stat-card forest-stat">
+                    <div class="stat-value">10M</div>
+                    <div class="stat-label">Hectares of Forest Lost Annually</div>
+                    <div class="stat-trend declining">Declining</div>
                 </div>
             </div>
         </div>
@@ -158,46 +170,108 @@
     <!-- Features Section -->
     <section class="features-section" id="features">
         <div class="container">
-            <div class="section-title">
+            <div class="section-header">
                 <h2>Why Choose Green.Games?</h2>
                 <p>Discover what makes our platform special</p>
             </div>
             
             <div class="features-grid">
                 <div class="feature-card">
-                    <div class="feature-icon">🎯</div>
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2L3.09 8.26L12 14L20.91 8.26L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M3.09 15.74L12 22L20.91 15.74" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M3.09 8.26L12 14.52L20.91 8.26" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
                     <h3>Educational Impact</h3>
                     <p>Learn about climate change, renewable energy, and conservation through engaging gameplay that makes complex topics accessible and fun.</p>
                 </div>
                 
                 <div class="feature-card">
-                    <div class="feature-icon">🌱</div>
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
                     <h3>Sustainable Gaming</h3>
                     <p>Our games promote environmental awareness and sustainable practices, encouraging players to make positive changes in their daily lives.</p>
                 </div>
                 
                 <div class="feature-card">
-                    <div class="feature-icon">🎮</div>
-                    <h3>Quality Entertainment</h3>
-                    <p>High-quality games that are genuinely fun to play, proving that educational content doesn't have to compromise on entertainment value.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">🌐</div>
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                            <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/>
+                            <path d="M12 1V3" stroke="currentColor" stroke-width="2"/>
+                            <path d="M12 21V23" stroke="currentColor" stroke-width="2"/>
+                            <path d="M4.22 4.22L5.64 5.64" stroke="currentColor" stroke-width="2"/>
+                            <path d="M18.36 18.36L19.78 19.78" stroke="currentColor" stroke-width="2"/>
+                            <path d="M1 12H3" stroke="currentColor" stroke-width="2"/>
+                            <path d="M21 12H23" stroke="currentColor" stroke-width="2"/>
+                            <path d="M4.22 19.78L5.64 18.36" stroke="currentColor" stroke-width="2"/>
+                            <path d="M18.36 5.64L19.78 4.22" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </div>
                     <h3>Global Community</h3>
                     <p>Join a worldwide community of environmentally conscious gamers working together to create a more sustainable future.</p>
                 </div>
                 
                 <div class="feature-card">
-                    <div class="feature-icon">📱</div>
-                    <h3>Cross-Platform</h3>
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="2" y="3" width="20" height="14" rx="2" ry="2" stroke="currentColor" stroke-width="2"/>
+                            <path d="M8 21L16 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M12 17L12 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <h3>Cross-Platform Play</h3>
                     <p>Play on any device, anywhere. Our games are optimized for desktop, tablet, and mobile to ensure everyone can participate.</p>
                 </div>
                 
                 <div class="feature-card">
-                    <div class="feature-icon">🏆</div>
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
                     <h3>Achievement System</h3>
                     <p>Earn badges and achievements for learning about environmental topics and completing sustainability challenges.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mission Section -->
+    <section class="mission-section" id="about">
+        <div class="container">
+            <div class="mission-content">
+                <div class="mission-text">
+                    <div class="mission-block">
+                        <h3>Our Mission</h3>
+                        <p>We believe that gaming can be a powerful tool for positive change. Green.Games combines the excitement of interactive entertainment with meaningful environmental education, creating experiences that are both fun and impactful.</p>
+                    </div>
+                    
+                    <div class="mission-block">
+                        <h3>What Makes Us Different</h3>
+                        <p>Every game on our platform is designed with environmental themes, teaching players about sustainability, climate change, and conservation while they play. We're not just creating games – we're building a community of environmentally conscious gamers.</p>
+                    </div>
+                </div>
+                
+                <div class="mission-visual">
+                    <div class="animated-globe">
+                        <div class="globe-core"></div>
+                        <div class="globe-ring"></div>
+                        <div class="globe-ring-2"></div>
+                        <div class="floating-dots">
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -206,52 +280,45 @@
     <!-- Contact Section -->
     <section class="contact-section" id="contact">
         <div class="container">
-            <div class="section-title">
+            <div class="section-header">
                 <h2>Get Involved</h2>
                 <p>Join our mission to make gaming more sustainable</p>
             </div>
             
             <div class="contact-content">
-                <div class="contact-info">
-                    <h3>Ready to Make a Difference?</h3>
-                    <p>Whether you're a developer, educator, or passionate gamer, there are many ways to contribute to our green gaming community.</p>
-                    
-                    <div class="contact-options">
-                        <div class="contact-option">
-                            <div class="contact-icon">👩‍💻</div>
-                            <div class="contact-text">
-                                <h4>For Developers</h4>
-                                <p>Create and submit your own eco-friendly games to our platform</p>
-                            </div>
+                <div class="contact-options">
+                    <div class="contact-card">
+                        <div class="contact-icon">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M16 4H18C18.5304 4 19.0391 4.21071 19.4142 4.58579C19.7893 4.96086 20 5.46957 20 6V20C20 20.5304 19.7893 21.0391 19.4142 21.4142C19.0391 21.7893 18.5304 22 18 22H6C5.46957 22 4.96086 21.7893 4.58579 21.4142C4.21071 21.0391 4 20.5304 4 20V6C4 5.46957 4.21071 4.96086 4.58579 4.58579C4.96086 4.21071 5.46957 4 6 4H8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M15 2H9C8.44772 2 8 2.44772 8 3V5C8 5.55228 8.44772 6 9 6H15C15.5523 6 16 5.55228 16 5V3C16 2.44772 15.5523 2 15 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
                         </div>
-                        
-                        <div class="contact-option">
-                            <div class="contact-icon">🎓</div>
-                            <div class="contact-text">
-                                <h4>For Educators</h4>
-                                <p>Use our games in your classroom to teach environmental science</p>
-                            </div>
-                        </div>
-                        
-                        <div class="contact-option">
-                            <div class="contact-icon">🌟</div>
-                            <div class="contact-text">
-                                <h4>For Everyone</h4>
-                                <p>Spread the word and help us build a greener gaming community</p>
-                            </div>
-                        </div>
+                        <h4>For Developers</h4>
+                        <p>Create and submit your own eco-friendly games to our platform</p>
                     </div>
-                </div>
-                
-                <div class="contact-visual">
-                    <div class="earth-container">
-                        <div class="earth">🌍</div>
-                        <div class="floating-elements">
-                            <div class="floating-element">🌱</div>
-                            <div class="floating-element">♻️</div>
-                            <div class="floating-element">🎮</div>
-                            <div class="floating-element">💚</div>
+                    
+                    <div class="contact-card">
+                        <div class="contact-icon">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M22 12H18L15 21L9 3L6 12H2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
                         </div>
+                        <h4>For Educators</h4>
+                        <p>Integrate our games into your environmental curriculum and programs</p>
+                    </div>
+                    
+                    <div class="contact-card">
+                        <div class="contact-icon">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M17 21V19C17 17.9391 16.5786 16.9217 15.8284 16.1716C15.0783 15.4214 14.0609 15 13 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
+                                <path d="M23 21V19C23 18.1645 22.7155 17.3541 22.2094 16.7007C21.7033 16.0473 20.9054 15.5959 20 15.4142" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M16 3.13C16.9054 3.31168 17.7033 3.76307 18.2094 4.41646C18.7155 5.06986 19 5.88018 19 6.74999C19 7.61981 18.7155 8.43013 18.2094 9.08352C17.7033 9.73692 16.9054 10.1883 16 10.37" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <h4>For Gamers</h4>
+                        <p>Join our community and start making a difference through gameplay</p>
                     </div>
                 </div>
             </div>
@@ -262,36 +329,43 @@
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
-                <div class="footer-section">
-                    <h4>Green.Games</h4>
+                <div class="footer-brand">
+                    <div class="footer-logo">Green.Games</div>
                     <p>Making gaming sustainable, one game at a time.</p>
                 </div>
-                <div class="footer-section">
-                    <h4>Quick Links</h4>
-                    <ul>
-                        <li><a href="#home">Home</a></li>
-                        <li><a href="#about">About</a></li>
-                        <li><a href="#games">Games</a></li>
-                        <li><a href="#contact">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h4>Follow Us</h4>
-                    <div class="social-links">
-                        <a href="#" class="social-link">🐦</a>
-                        <a href="#" class="social-link">📘</a>
-                        <a href="#" class="social-link">📷</a>
-                        <a href="#" class="social-link">🎮</a>
+                
+                <div class="footer-links">
+                    <div class="footer-section">
+                        <h4>Platform</h4>
+                        <ul>
+                            <li><a href="#home">Home</a></li>
+                            <li><a href="#games">Games</a></li>
+                            <li><a href="#about">About</a></li>
+                            <li><a href="#contact">Contact</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="footer-section">
+                        <h4>Community</h4>
+                        <ul>
+                            <li><a href="#">Discord</a></li>
+                            <li><a href="#">Reddit</a></li>
+                            <li><a href="#">Twitter</a></li>
+                            <li><a href="#">GitHub</a></li>
+                        </ul>
                     </div>
                 </div>
             </div>
+            
             <div class="footer-bottom">
-                <p>&copy; 2024 Green.Games. All rights reserved. Made with 💚 for the planet.</p>
+                <p>© 2024 Green.Games. All rights reserved. Made with <span class="heart-icon"></span> for the planet.</p>
             </div>
         </div>
     </footer>
 
+    <!-- Scripts -->
     <script src="js/games-config.js"></script>
+    <script src="js/game-loader.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html> 
