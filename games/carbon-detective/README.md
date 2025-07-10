@@ -38,8 +38,8 @@ An interactive environmental quiz game that teaches players about carbon footpri
 
 ## Integration
 
-This game is integrated into the Green Games platform and can be accessed by clicking the "Carbon Detective" game card on the main site.
+This game is integrated into the Green.Games platform and can be accessed by clicking the "Carbon Detective" game card on the main site.
 
 ---
 
-*Created as part of the Green Games educational gaming platform.* 
+*Created as part of the Green.Games educational gaming platform.* 

@@ -1,6 +1,6 @@
 /**
  * ===================================
- * GREEN GAMES - MAIN JAVASCRIPT
+ * GREEN.GAMES - MAIN JAVASCRIPT
  * Enhanced interactivity and smooth user experience
  * ===================================
  */
@@ -65,12 +65,12 @@ const Logger = {
 };
 
 /**
- * Main application class for Green Games website
+ * Main application class for Green.Games website
  * Handles navigation, animations, and core functionality
  */
 class GreenGamesApp {
     constructor() {
-        Logger.info('Initializing Green Games application');
+        Logger.info('Initializing Green.Games application');
         
         this.isScrolling = false;
         this.lastScrollTop = 0;
@@ -615,7 +615,7 @@ function navigateToSection(targetSection) {
 }
 
 // Initialize the application when the script loads
-Logger.info('Loading Green Games main script');
+Logger.info('Loading Green.Games main script');
 
 // Inject animation styles
 injectAnimationStyles();
@@ -664,4 +664,4 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-Logger.info('Green Games main script loaded successfully'); 
+Logger.info('Green.Games main script loaded successfully'); 

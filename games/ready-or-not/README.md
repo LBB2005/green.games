@@ -54,7 +54,7 @@ An interactive AI readiness assessment game that tests knowledge about brand opt
 
 ## Integration
 
-This game is part of the Green Games platform and focuses on AI readiness education for brand optimization.
+This game is part of the Green.Games platform and focuses on AI readiness education for brand optimization.
 
 ---
 

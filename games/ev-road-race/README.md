@@ -69,4 +69,4 @@ This game teaches players about:
 
 ---
 
-*Part of the Green Games educational gaming platform* 
+*Part of the Green.Games educational gaming platform* 

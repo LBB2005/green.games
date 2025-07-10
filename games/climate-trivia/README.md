@@ -97,4 +97,4 @@ This game promotes:
 
 ---
 
-*Part of the Green Games educational gaming platform promoting environmental awareness through interactive learning* 
+*Part of the Green.Games educational gaming platform promoting environmental awareness through interactive learning* 

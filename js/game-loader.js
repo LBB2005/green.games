@@ -1,6 +1,6 @@
 /**
  * ===================================
- * GREEN GAMES - FLEXIBLE GAME LOADER
+ * GREEN.GAMES - FLEXIBLE GAME LOADER
  * Enhanced game loading system with dynamic configuration
  * ===================================
  */

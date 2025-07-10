@@ -1,6 +1,6 @@
 /**
  * ===================================
- * GREEN GAMES - GAMES CONFIGURATION
+ * GREEN.GAMES - GAMES CONFIGURATION
  * Easy-to-modify configuration for adding new games
  * ===================================
  */

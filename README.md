@@ -1,10 +1,10 @@
-# Green Games - Flexible Gaming Platform
+# Green.Games - Flexible Gaming Platform
 
 A flexible, scalable web-based gaming platform focused on environmental education and entertainment.
 
 ## 🎮 Project Overview
 
-Green Games is a modern web platform designed to host educational games about environmental protection, sustainability, and climate awareness. The platform features a flexible architecture that makes it easy to add new games dynamically.
+Green.Games is a modern web platform designed to host educational games about environmental protection, sustainability, and climate awareness. The platform features a flexible architecture that makes it easy to add new games dynamically.
 
 ## 📁 Project Structure
 

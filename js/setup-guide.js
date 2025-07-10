@@ -1,6 +1,6 @@
 /**
  * ===================================
- * GREEN GAMES - SETUP GUIDE
+ * GREEN.GAMES - SETUP GUIDE
  * Interactive setup guide for new users
  * ===================================
  */
@@ -15,7 +15,7 @@ class SetupGuide {
         this.currentStep = 0;
         this.steps = [
             {
-                title: 'Welcome to Green Games!',
+                title: 'Welcome to Green.Games!',
                 content: 'This platform makes it easy to add and manage environmental games. Let\'s get you started!',
                 action: 'Next'
             },
