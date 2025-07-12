@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compost Clash</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', 'Helvetica', sans-serif;
+            background: linear-gradient(135deg, #2d5016, #4a7c23, #6b8e23);
+            color: #fff;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: bounce 2s infinite;
+        }
+        
+        .title {
+            font-family: 'Arial Black', 'Helvetica', sans-serif;
+            font-size: 3.5rem;
+            color: #8fbc8f;
+            text-shadow: 3px 3px 0px #2d5016, 6px 6px 0px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+        
+        .subtitle {
+            font-family: 'Arial', 'Helvetica', sans-serif;
+            font-size: 1.2rem;
+            color: #90ee90;
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.5);
+            letter-spacing: 1px;
+        }
+        
+        .game-flow {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        .step {
+            background: rgba(255,255,255,0.1);
+            border: 3px solid #90ee90;
+            border-radius: 15px;
+            padding: 25px;
+            position: relative;
+        }
+        
+        .step-number {
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            background: #90ee90;
+            color: #2d5016;
+            font-size: 1.5rem;
+            font-weight: bold;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-family: 'Arial Black', 'Helvetica', sans-serif;
+        }
+        
+        .step-title {
+            font-family: 'Arial Black', 'Helvetica', sans-serif;
+            font-size: 1.5rem;
+            color: #fff;
+            margin-bottom: 15px;
+            margin-top: 10px;
+            text-transform: uppercase;
+        }
+        
+        .step-description {
+            font-size: 1.1rem;
+            color: #f0f8ff;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        
+        .game-modes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .mode-card {
+            background: linear-gradient(135deg, #8b4513, #a0522d);
+            border: 4px solid #deb887;
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .mode-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.4);
+        }
+        
+        .mode-card.selected {
+            border-color: #ffd700;
+            box-shadow: 0 0 30px rgba(255,215,0,0.5);
+        }
+        
+        .mode-title {
+            font-family: 'Arial Black', 'Helvetica', sans-serif;
+            font-size: 1.5rem;
+            color: #fff8dc;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.5);
+            letter-spacing: 1px;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+        
+        .mode-description {
+            font-family: 'Arial', 'Helvetica', sans-serif;
+            font-size: 0.9rem;
+            color: #f5deb3;
+            line-height: 1.4;
+            font-weight: 400;
+        }
+        
+        .team-selection {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .team-card {
+            background: linear-gradient(135deg, rgba(139,69,19,0.8), rgba(160,82,45,0.8));
+            border: 3px solid #deb887;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .team-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(255,255,255,0.3);
+        }
+        
+        .team-card.selected {
+            border-color: #ffd700;
+            box-shadow: 0 0 30px rgba(255,215,0,0.5);
+        }
+        
+        .team-card.worms {
+            background: linear-gradient(135deg, rgba(205,92,92,0.8), rgba(220,20,60,0.8));
+        }
+        
+        .team-card.mold {
+            background: linear-gradient(135deg, rgba(46,139,87,0.8), rgba(60,179,113,0.8));
+        }
+        
+        .team-card.microbes {
+            background: linear-gradient(135deg, rgba(138,43,226,0.8), rgba(147,112,219,0.8));
+        }
+        
+        .character {
+            font-size: 4rem;
+            margin-bottom: 10px;
+            animation: wiggle 2s infinite;
+            display: inline-block;
+        }
+        
+        .team-name {
+            font-family: 'Arial Black', 'Helvetica', sans-serif;
+            font-size: 1.3rem;
+            color: #fff;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.7);
+            letter-spacing: 1px;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+        
+        .battle-cry {
+            font-family: 'Arial', 'Helvetica', sans-serif;
+            font-size: 0.9rem;
+            color: #ffff00;
+            font-weight: bold;
+            text-shadow: 1px 1px 0px rgba(0,0,0,0.8);
+            animation: glow 2s ease-in-out infinite alternate;
+            letter-spacing: 1px;
+        }
+        
+        .battle-section {
+            background: linear-gradient(135deg, #3e2723, #5d4037);
+            border: 6px solid #8d6e63;
+            border-radius: 25px;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .battle-status {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .battle-status h3 {
+            font-family: 'Arial Black', 'Helvetica', sans-serif;
+            font-size: 1.8rem;
+            color: #ffd700;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+        
+        .current-battle {
+            font-size: 1.3rem;
+            color: #f0f8ff;
+            margin-bottom: 15px;
+        }
+        
+        .battle-timer {
+            font-size: 2rem;
+            color: #ff6b6b;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        
+        .powerups {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .powerup {
+            background: linear-gradient(135deg, #ffd700, #ffb347);
+            border: 3px solid #ff8c00;
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .powerup:hover {
+            transform: translateY(-3px) rotate(2deg);
+            box-shadow: 0 8px 16px rgba(255,140,0,0.4);
+        }
+        
+        .powerup.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .powerup.disabled:hover {
+            transform: none;
+        }
+        
+        .powerup-name {
+            font-family: 'Arial Black', 'Helvetica', sans-serif;
+            font-size: 1.1rem;
+            color: #8b4513;
+            margin-bottom: 5px;
+            font-weight: 900;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        
+        .powerup-effect {
+            font-family: 'Arial', 'Helvetica', sans-serif;
+            font-size: 0.8rem;
+            color: #a0522d;
+        }
+        
+        .powerup-cooldown {
+            font-size: 0.7rem;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .stats-panel {
+            background: linear-gradient(135deg, #2f4f4f, #708090);
+            border: 4px solid #b0c4de;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .balance-meter {
+            margin-bottom: 20px;
+        }
+        
+        .balance-label {
+            font-family: 'Arial', 'Helvetica', sans-serif;
+            font-size: 1.2rem;
+            color: #f0f8ff;
+            margin-bottom: 10px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .balance-bar {
+            width: 100%;
+            height: 30px;
+            background: linear-gradient(90deg, #8b4513 0%, #228b22 50%, #8b4513 100%);
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .balance-indicator {
+            position: absolute;
+            top: 0;
+            left: 45%;
+            width: 10%;
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b, #ffd93d);
+            border-radius: 15px;
+            animation: pulse 1.5s infinite;
+        }
+        
+        .balance-status {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+        
+        .balance-good {
+            color: #90ee90;
+        }
+        
+        .balance-warning {
+            color: #ffd700;
+        }
+        
+        .balance-danger {
+            color: #ff6b6b;
+        }
+        
+        .score-display {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .score-item {
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .score-label {
+            font-size: 0.9rem;
+            color: #f0f8ff;
+            margin-bottom: 5px;
+        }
+        
+        .score-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ffd700;
+        }
+        
+        .decomposition-progress {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .progress-item {
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            padding: 15px;
+        }
+        
+        .progress-label {
+            font-family: 'Arial', 'Helvetica', sans-serif;
+            font-size: 1rem;
+            color: #f0f8ff;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1);
+            border-radius: 10px;
+            transition: width 1s ease;
+            animation: shimmer-progress 2s infinite;
+        }
+        
+        .progress-percentage {
+            text-align: center;
+            margin-top: 5px;
+            font-size: 0.9rem;
+            color: #f0f8ff;
+        }
+        
+        .controls {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            border: none;
+            color: white;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            font-family: 'Arial Black', 'Helvetica', sans-serif;
+            border-radius: 25px;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+            letter-spacing: 1px;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .btn:disabled:hover {
+            transform: none;
+        }
+        
+        .btn-start {
+            background: linear-gradient(135deg, #4ecdc4, #45b7d1);
+            font-size: 1.5rem;
+            padding: 20px 40px;
+        }
+        
+        .notifications {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            max-width: 350px;
+        }
+        
+        .notification {
+            background: linear-gradient(135deg, #ff6b6b, #ffd93d);
+            border: 3px solid #fff;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 10px;
+            color: #333;
+            font-family: 'Arial', 'Helvetica', sans-serif;
+            font-weight: bold;
+            font-size: 1.1rem;
+            text-shadow: 1px 1px 0px rgba(255,255,255,0.5);
+            animation: slideIn 0.5s ease-out;
+            cursor: pointer;
+        }
+        
+        .notification.tip {
+            background: linear-gradient(135deg, #4ecdc4, #45b7d1);
+            border-color: #87ceeb;
+            animation: slideIn 0.5s ease-out, pulse 2s infinite;
+        }
+        
+        .notification.instruction {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: #fff;
+            border-color: #e1bee7;
+        }
+        
+        .notification.success {
+            background: linear-gradient(135deg, #4ecdc4, #45b7d1);
+        }
+        
+        .notification.warning {
+            background: linear-gradient(135deg, #ffd93d, #ff8c00);
+        }
+        
+        .notification.error {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+        }
+        
+        .help-text {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            font-style: italic;
+            color: #f0f8ff;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+        
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-5deg); }
+            75% { transform: rotate(5deg); }
+        }
+        
+        @keyframes glow {
+            0% { text-shadow: 0 0 5px #ffff00; }
+            100% { text-shadow: 0 0 20px #ffff00, 0 0 30px #ffff00; }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        @keyframes shimmer-progress {
+            0% { background-position: -200px 0; }
+            100% { background-position: 200px 0; }
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @media (max-width: 768px) {
+            .title { font-size: 2.5rem; }
+            .team-selection { grid-template-columns: 1fr; }
+            .character { font-size: 3rem; }
+            .powerups { grid-template-columns: 1fr; }
+            .decomposition-progress { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">🦠 COMPOST CLASH 🦠</h1>
+            <p class="subtitle">Where Decomposition Meets Devastation!</p>
+        </div>
+        
+        <div class="game-flow">
+            <!-- Step 1: Choose Game Mode -->
+            <div class="step" id="step1">
+                <div class="step-number">1</div>
+                <h3 class="step-title">Choose Your Battle Mode</h3>
+                <p class="step-description">Pick your preferred chaos level! Each mode has different challenges and rewards.</p>
+                
+                <div class="game-modes">
+                    <div class="mode-card" data-mode="banana" onclick="selectMode('banana')">
+                        <h4 class="mode-title">🍌 BANANA PEEL BLITZ</h4>
+                        <p class="mode-description">Fast-paced banana breakdown! Watch out for the slip factor!</p>
+                    </div>
+                    
+                    <div class="mode-card" data-mode="lettuce" onclick="selectMode('lettuce')">
+                        <h4 class="mode-title">🥬 LETTUCE VS. LASAGNA</h4>
+                        <p class="mode-description">Green vs. cheesy carbs! Health meets indulgence!</p>
+                    </div>
+                    
+                    <div class="mode-card" data-mode="chaos" onclick="selectMode('chaos')">
+                        <h4 class="mode-title">🌪️ CHAOS COMPOST</h4>
+                        <p class="mode-description">Anything goes! Complete rotting mayhem!</p>
+                    </div>
+                </div>
+                
+                <div class="help-text">
+                    💡 <strong>Tip:</strong> Start with Banana Peel Blitz for easier gameplay, or jump into Chaos Compost for maximum madness!
+                </div>
+            </div>
+            
+            <!-- Step 2: Choose Team -->
+            <div class="step" id="step2">
+                <div class="step-number">2</div>
+                <h3 class="step-title">Select Your Decomposer Squad</h3>
+                <p class="step-description">Choose your team of rotting champions! Each has unique abilities and attack patterns.</p>
+                
+                <div class="team-selection">
+                    <div class="team-card worms" data-team="worms" onclick="selectTeam('worms')">
+                        <div class="character">🪱🪱🪱</div>
+                        <div class="team-name">WORM WARRIORS</div>
+                        <div class="battle-cry">"SOIL SOLDIERS UNITE!"</div>
+                        <div class="help-text">⚡ <strong>Special:</strong> Excellent at breaking down organic matter quickly!</div>
+                    </div>
+                    
+                    <div class="team-card mold" data-team="mold" onclick="selectTeam('mold')">
+                        <div class="character">🦠🍄🦠</div>
+                        <div class="team-name">MOLD MILITIA</div>
+                        <div class="battle-cry">"FUNGUS AMONG US!"</div>
+                        <div class="help-text">⚡ <strong>Special:</strong> Spreads rapidly and handles tough materials!</div>
+                    </div>
+                    
+                    <div class="team-card microbes" data-team="microbes" onclick="selectTeam('microbes')">
+                        <div class="character">🔬🦠🔬</div>
+                        <div class="team-name">MICROBE MOBS</div>
+                        <div class="battle-cry">"BACTERIA BONANZA!"</div>
+                        <div class="help-text">⚡ <strong>Special:</strong> Incredible numbers and teamwork!</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Step 3: Battle Arena -->
+            <div class="step" id="step3">
+                <div class="step-number">3</div>
+                <h3 class="step-title">Battle Arena</h3>
+                
+                <div class="battle-section">
+                    <div class="battle-status">
+                        <h3 id="battleTitle">Ready to Battle!</h3>
+                        <div class="current-battle" id="currentBattle">Select mode and team to begin</div>
+                        <div class="battle-timer" id="battleTimer">--:--</div>
+                    </div>
+                    
+                    <div class="score-display">
+                        <div class="score-item">
+                            <div class="score-label">Your Score</div>
+                            <div class="score-value" id="playerScore">0</div>
+                        </div>
+                        <div class="score-item">
+                            <div class="score-label">Enemy Score</div>
+                            <div class="score-value" id="enemyScore">0</div>
+                        </div>
+                        <div class="score-item">
+                            <div class="score-label">Decomposition</div>
+                            <div class="score-value" id="decompositionRate">0%</div>
+                        </div>
+                    </div>
+                    
+                    <div class="powerups">
+                        <div class="powerup" data-powerup="aeration" onclick="usePowerup('aeration')">
+                            <div class="powerup-name">💨 AERATION BLAST</div>
+                            <div class="powerup-effect">Boost decomposition speed!</div>
+                            <div class="powerup-cooldown" id="cooldown-aeration"></div>
+                        </div>
+                        
+                        <div class="powerup" data-powerup="ph" onclick="usePowerup('ph')">
+                            <div class="powerup-name">🧪 pH BOMB</div>
+                            <div class="powerup-effect">Disrupt enemy progress!</div>
+                            <div class="powerup-cooldown" id="cooldown-ph"></div>
+                        </div>
+                        
+                        <div class="powerup" data-powerup="avocado" onclick="usePowerup('avocado')">
+                            <div class="powerup-name">🥑 AVOCADO SHIELD</div>
+                            <div class="powerup-effect">Protect from attacks!</div>
+                            <div class="powerup-cooldown" id="cooldown-avocado"></div>
+                        </div>
+                        
+                        <div class="powerup" data-powerup="thermal" onclick="usePowerup('thermal')">
+                            <div class="powerup-name">🔥 THERMAL BLAST</div>
+                            <div class="powerup-effect">Heat up the action!</div>
+                            <div class="powerup-cooldown" id="cooldown-thermal"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Step 4: Compost Balance -->
+            <div class="step" id="step4">
+                <div class="step-number">4</div>
+                <h3 class="step-title">Compost Balance Monitor</h3>
+                <p class="step-description">Keep your compost balanced! Too much brown (carbon) or green (nitrogen) will cause pile collapse!</p>
+                
+                <div class="stats-panel">
+                    <div class="balance-meter">
+                        <div class="balance-label">🍂 COMPOST BALANCE METER 🍂</div>
+                        <div class="balance-bar">
+                            <div class="balance-indicator" id="balanceIndicator"></div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-top: 5px;">
+                            <span style="color: #8b4513;">BROWN (Carbon)</span>
+                            <span style="color: #f0f8ff;">PERFECT BALANCE</span>
+                            <span style="color: #228b22;">GREEN (Nitrogen)</span>
+                        </div>
+                        <div class="balance-status" id="balanceStatus">Perfect Balance!</div>
+                    </div>
+                    
+                    <div class="decomposition-progress">
+                        <div class="progress-item">
+                            <div class="progress-label">🍌 Banana Breakdown</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progress-banana" style="width: 0%"></div>
+                            </div>
+                            <div class="progress-percentage" id="percent-banana">0%</div>
+                        </div>
+                        
+                        <div class="progress-item">
+                            <div class="progress-label">🥬 Lettuce Liquefaction</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progress-lettuce" style="width: 0%"></div>
+                            </div>
+                            <div class="progress-percentage" id="percent-lettuce">0%</div>
+                        </div>
+                        
+                        <div class="progress-item">
+                            <div class="progress-label">🍝 Pasta Pulverization</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progress-pasta" style="width: 0%"></div>
+                            </div>
+                            <div class="progress-percentage" id="percent-pasta">0%</div>
+                        </div>
+                        
+                        <div class="progress-item">
+                            <div class="progress-label">🥕 Carrot Carnage</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progress-carrot" style="width: 0%"></div>
+                            </div>
+                            <div class="progress-percentage" id="percent-carrot">0%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button class="btn btn-start" id="startBtn" onclick="startBattle()" disabled>🚀 START BATTLE!</button>
+            <button class="btn" onclick="resetGame()">🔄 RESET GAME</button>
+        </div>
+    </div>
+    
+    <div class="notifications" id="notifications"></div>
+    
+    <script>
+        let gameState = {
+            mode: null,
+            team: null,
+            isPlaying: false,
+            balance: 50,
+            playerScore: 0,
+            enemyScore: 0,
+            decompositionRate: 0,
+            battleTime: 0,
+            powerupCooldowns: {},
+            isShielded: false
+        };
+        
+        let battleTimer = null;
+        let gameLoop = null;
+        
+        function selectMode(mode) {
+            gameState.mode = mode;
+            
+            // Visual feedback
+            document.querySelectorAll('.mode-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            document.querySelector(`[data-mode="${mode}"]`).classList.add('selected');
+            
+            // Update battle description
+            const modeDescriptions = {
+                banana: "🍌 Banana Peel Blitz - Fast decomposition with slip hazards!",
+                lettuce: "🥬 Lettuce vs. Lasagna - Balance greens and browns carefully!",
+                chaos: "🌪️ Chaos Compost - Anything can happen in this mode!"
+            };
+            
+            document.getElementById('currentBattle').textContent = modeDescriptions[mode];
+            
+            showNotification(`${mode.toUpperCase()} MODE SELECTED!`, 'success');
+            showTip('Now choose your team below!');
+            checkReadyToStart();
+        }
+        
+        function selectTeam(team) {
+            gameState.team = team;
+            
+            // Visual feedback
+            document.querySelectorAll('.team-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            document.querySelector(`[data-team="${team}"]`).classList.add('selected');
+            
+            const teamNames = {
+                worms: "WORM WARRIORS",
+                mold: "MOLD MILITIA",
+                microbes: "MICROBE MOBS"
+            };
+            
+            showNotification(`${teamNames[team]} SELECTED!`, 'success');
+            showTip('Great! Now click START BATTLE to begin the chaos!');
+            checkReadyToStart();
+        }
+        
+        function checkReadyToStart() {
+            const startBtn = document.getElementById('startBtn');
+            if (gameState.mode && gameState.team) {
+                startBtn.disabled = false;
+                startBtn.textContent = '🚀 START BATTLE!';
+                document.getElementById('battleTitle').textContent = 'Ready to Battle!';
+            } else {
+                startBtn.disabled = true;
+                if (!gameState.mode) {
+                    startBtn.textContent = '❌ SELECT MODE FIRST';
+                } else if (!gameState.team) {
+                    startBtn.textContent = '❌ SELECT TEAM FIRST';
+                }
+            }
+        }
+        
+        function startBattle() {
+            if (!gameState.mode || !gameState.team) return;
+            
+            gameState.isPlaying = true;
+            gameState.battleTime = 90; // 90 seconds (longer battles)
+            gameState.playerScore = 0;
+            gameState.enemyScore = 0;
+            gameState.decompositionRate = 0;
+            
+            document.getElementById('battleTitle').textContent = 'BATTLE IN PROGRESS!';
+            document.getElementById('startBtn').textContent = '⚔️ BATTLING...';
+            document.getElementById('startBtn').disabled = true;
+            
+            // Reset progress bars
+            resetProgressBars();
+            
+            // Start battle timer
+            battleTimer = setInterval(updateBattleTimer, 1000);
+            
+            // Start game loop (slower pace)
+            gameLoop = setInterval(updateGame, 1500);
+            
+            showNotification('BATTLE STARTED!', 'success');
+            showInstruction('Click the colorful boxes below to help your team!');
+            
+            // Show balance tip after a few seconds
+            setTimeout(() => {
+                showTip('The green bar shows how healthy your compost is!');
+            }, 8000);
+        }
+        
+        function updateBattleTimer() {
+            if (gameState.battleTime <= 0) {
+                endBattle();
+                return;
+            }
+            
+            gameState.battleTime--;
+            const minutes = Math.floor(gameState.battleTime / 60);
+            const seconds = gameState.battleTime % 60;
+            document.getElementById('battleTimer').textContent = 
+                `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
+        function updateGame() {
+            if (!gameState.isPlaying) return;
+            
+            // Update scores
+            const playerGain = Math.floor(Math.random() * 50) + 10;
+            const enemyGain = Math.floor(Math.random() * 40) + 5;
+            
+            gameState.playerScore += playerGain;
+            gameState.enemyScore += enemyGain;
+            
+            // Update decomposition rate
+            gameState.decompositionRate = Math.min(100, gameState.decompositionRate + Math.random() * 5);
+            
+            // Update display
+            document.getElementById('playerScore').textContent = gameState.playerScore;
+            document.getElementById('enemyScore').textContent = gameState.enemyScore;
+            document.getElementById('decompositionRate').textContent = 
+                Math.floor(gameState.decompositionRate) + '%';
+            
+            // Update progress bars
+            updateProgressBars();
+            
+            // Random events (less frequent)
+            if (Math.random() < 0.15) {
+                triggerRandomEvent();
+            }
+            
+            // Check balance
+            updateBalance();
+        }
+        
+        function updateProgressBars() {
+            const items = ['banana', 'lettuce', 'pasta', 'carrot'];
+            items.forEach(item => {
+                const currentWidth = parseFloat(document.getElementById(`progress-${item}`).style.width) || 0;
+                const increment = Math.random() * 4 + 1; // Slower progress
+                const newWidth = Math.min(100, currentWidth + increment);
+                
+                document.getElementById(`progress-${item}`).style.width = newWidth + '%';
+                document.getElementById(`percent-${item}`).textContent = Math.floor(newWidth) + '%';
+                
+                if (newWidth >= 100) {
+                    showNotification(`Great job! ${item.toUpperCase()} is all done!`, 'success');
+                }
+            });
+        }
+        
+        function resetProgressBars() {
+            const items = ['banana', 'lettuce', 'pasta', 'carrot'];
+            items.forEach(item => {
+                document.getElementById(`progress-${item}`).style.width = '0%';
+                document.getElementById(`percent-${item}`).textContent = '0%';
+            });
+        }
+        
+        function triggerRandomEvent() {
+            const events = [
+                () => {
+                    gameState.balance += Math.random() * 20 - 10;
+                    showNotification('🌪️ COMPOST STORM!', 'warning');
+                },
+                () => {
+                    gameState.playerScore += 100;
+                    showNotification('💰 BONUS POINTS!', 'success');
+                },
+                () => {
+                    if (!gameState.isShielded) {
+                        gameState.playerScore = Math.max(0, gameState.playerScore - 50);
+                        showNotification('💥 ENEMY ATTACK!', 'error');
+                    } else {
+                        showNotification('🛡️ ATTACK BLOCKED!', 'success');
+                    }
+                }
+            ];
+            
+            events[Math.floor(Math.random() * events.length)]();
+        }
+        
+        function updateBalance() {
+            gameState.balance = Math.max(0, Math.min(100, gameState.balance));
+            
+            const indicator = document.getElementById('balanceIndicator');
+            indicator.style.left = gameState.balance + '%';
+            
+            const status = document.getElementById('balanceStatus');
+            
+            if (gameState.balance < 25 || gameState.balance > 75) {
+                status.textContent = '⚠️ DANGER ZONE!';
+                status.className = 'balance-status balance-danger';
+                
+                if (gameState.balance < 10 || gameState.balance > 90) {
+                    showNotification('💥 COMPOST PILE COLLAPSE!', 'error');
+                    gameState.playerScore = Math.max(0, gameState.playerScore - 200);
+                    gameState.balance = 50; // Reset balance
+                }
+            } else if (gameState.balance < 35 || gameState.balance > 65) {
+                status.textContent = '⚠️ Getting Unbalanced';
+                status.className = 'balance-status balance-warning';
+            } else {
+                status.textContent = '✅ Perfect Balance!';
+                status.className = 'balance-status balance-good';
+            }
+        }
+        
+        function usePowerup(type) {
+            if (!gameState.isPlaying) {
+                showNotification('❌ START BATTLE FIRST!', 'error');
+                showTip('You need to start a battle before using power-ups!');
+                return;
+            }
+            
+            if (gameState.powerupCooldowns[type]) {
+                showNotification(`⏱️ ${type.toUpperCase()} COOLING DOWN!`, 'warning');
+                return;
+            }
+            
+            const powerupEffects = {
+                aeration: () => {
+                    gameState.balance += 15;
+                    gameState.playerScore += 75;
+                    showNotification('💨 AERATION BLAST!', 'success');
+                    showTip('Aeration improved your compost balance!');
+                },
+                ph: () => {
+                    gameState.enemyScore = Math.max(0, gameState.enemyScore - 100);
+                    gameState.balance -= 10;
+                    showNotification('🧪 pH BOMB DEPLOYED!', 'success');
+                    showTip('pH Bomb damaged your enemies!');
+                },
+                avocado: () => {
+                    gameState.isShielded = true;
+                    setTimeout(() => { gameState.isShielded = false; }, 10000);
+                    showNotification('🥑 AVOCADO SHIELD ACTIVE!', 'success');
+                    showTip('You\'re protected from attacks for 10 seconds!');
+                },
+                thermal: () => {
+                    gameState.decompositionRate += 20;
+                    gameState.playerScore += 100;
+                    showNotification('🔥 THERMAL BLAST!', 'success');
+                    showTip('Thermal blast sped up decomposition!');
+                }
+            };
+            
+            powerupEffects[type]();
+            
+            // Set cooldown
+            gameState.powerupCooldowns[type] = 15; // 15 seconds
+            const powerupElement = document.querySelector(`[data-powerup="${type}"]`);
+            powerupElement.classList.add('disabled');
+            
+            const cooldownTimer = setInterval(() => {
+                gameState.powerupCooldowns[type]--;
+                document.getElementById(`cooldown-${type}`).textContent = 
+                    `Ready in ${gameState.powerupCooldowns[type]}s`;
+                
+                if (gameState.powerupCooldowns[type] <= 0) {
+                    clearInterval(cooldownTimer);
+                    delete gameState.powerupCooldowns[type];
+                    powerupElement.classList.remove('disabled');
+                    document.getElementById(`cooldown-${type}`).textContent = 'READY!';
+                    showTip(`${type.toUpperCase()} power-up is ready to use again!`);
+                }
+            }, 1000);
+        }
+        
+        function endBattle() {
+            gameState.isPlaying = false;
+            clearInterval(battleTimer);
+            clearInterval(gameLoop);
+            
+            document.getElementById('battleTitle').textContent = 'BATTLE COMPLETE!';
+            document.getElementById('startBtn').textContent = '🚀 START NEW BATTLE!';
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('battleTimer').textContent = '0:00';
+            
+            // Determine winner
+            if (gameState.playerScore > gameState.enemyScore) {
+                showNotification('🎉 VICTORY! SMELLS LIKE SUCCESS!', 'success');
+            } else if (gameState.playerScore < gameState.enemyScore) {
+                showNotification('💀 DEFEAT! BACK TO THE COMPOST!', 'error');
+            } else {
+                showNotification('🤝 TIE! EVENLY MATCHED ROT!', 'warning');
+            }
+        }
+        
+        function resetGame() {
+            gameState = {
+                mode: null,
+                team: null,
+                isPlaying: false,
+                balance: 50,
+                playerScore: 0,
+                enemyScore: 0,
+                decompositionRate: 0,
+                battleTime: 0,
+                powerupCooldowns: {},
+                isShielded: false
+            };
+            
+            if (battleTimer) clearInterval(battleTimer);
+            if (gameLoop) clearInterval(gameLoop);
+            
+            // Reset UI
+            document.querySelectorAll('.mode-card, .team-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            document.querySelectorAll('.powerup').forEach(powerup => {
+                powerup.classList.remove('disabled');
+            });
+            
+            document.querySelectorAll('.powerup-cooldown').forEach(cooldown => {
+                cooldown.textContent = '';
+            });
+            
+            document.getElementById('battleTitle').textContent = 'Ready to Battle!';
+            document.getElementById('currentBattle').textContent = 'Select mode and team to begin';
+            document.getElementById('battleTimer').textContent = '--:--';
+            document.getElementById('playerScore').textContent = '0';
+            document.getElementById('enemyScore').textContent = '0';
+            document.getElementById('decompositionRate').textContent = '0%';
+            document.getElementById('balanceIndicator').style.left = '45%';
+            document.getElementById('balanceStatus').textContent = 'Perfect Balance!';
+            document.getElementById('balanceStatus').className = 'balance-status balance-good';
+            
+            resetProgressBars();
+            checkReadyToStart();
+            
+            showNotification('🔄 GAME RESET! READY FOR MORE ROT!', 'success');
+        }
+        
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            
+            // Click to dismiss
+            notification.addEventListener('click', () => {
+                notification.remove();
+            });
+            
+            document.getElementById('notifications').appendChild(notification);
+            
+            // Auto-dismiss based on type
+            const dismissTime = type === 'tip' ? 5000 : type === 'instruction' ? 8000 : 3000;
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, dismissTime);
+        }
+        
+        function showTip(message) {
+            showNotification(`💡 TIP: ${message}`, 'tip');
+        }
+        
+        function showInstruction(message) {
+            showNotification(`🎯 ${message}`, 'instruction');
+        }
+        
+        // Initialize game
+        document.addEventListener('DOMContentLoaded', function() {
+            showNotification('🦠 WELCOME TO COMPOST CLASH! 🦠', 'success');
+            
+            // Show initial instructions
+            setTimeout(() => {
+                showInstruction('Step 1: Choose your game mode above!');
+            }, 2000);
+            
+            // Balance meter animation
+            function animateBalance() {
+                const indicator = document.getElementById('balanceIndicator');
+                if (indicator) {
+                    const variation = Math.sin(Date.now() * 0.001) * 2;
+                    indicator.style.left = Math.max(0, Math.min(100, gameState.balance + variation)) + '%';
+                }
+                requestAnimationFrame(animateBalance);
+            }
+            animateBalance();
+        });
+    </script>
+</body>
+</html> 

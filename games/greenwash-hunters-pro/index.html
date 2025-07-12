@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Greenwash Hunters - Professional Eco-Detective Game</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-green: #10b981;
+            --primary-green-dark: #047857;
+            --primary-green-light: #34d399;
+            --secondary-blue: #3b82f6;
+            --secondary-blue-dark: #1d4ed8;
+            --accent-orange: #f59e0b;
+            --accent-red: #ef4444;
+            --neutral-50: #f9fafb;
+            --neutral-100: #f3f4f6;
+            --neutral-200: #e5e7eb;
+            --neutral-300: #d1d5db;
+            --neutral-400: #9ca3af;
+            --neutral-500: #6b7280;
+            --neutral-600: #4b5563;
+            --neutral-700: #374151;
+            --neutral-800: #1f2937;
+            --neutral-900: #111827;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #064e3b 0%, #065f46 25%, #047857 50%, #10b981 100%);
+            min-height: 100vh;
+            color: var(--neutral-800);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .game-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Modern Card Component */
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: var(--shadow-2xl);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 32px 64px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        /* Typography System */
+        .text-display {
+            font-size: 4.5rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+            line-height: 1.1;
+        }
+
+        .text-h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+            line-height: 1.2;
+        }
+
+        .text-h2 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            letter-spacing: -0.025em;
+            line-height: 1.3;
+        }
+
+        .text-h3 {
+            font-size: 2rem;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        .text-body {
+            font-size: 1.25rem;
+            line-height: 1.6;
+        }
+
+        .text-small {
+            font-size: 1.125rem;
+            line-height: 1.5;
+        }
+
+        /* Start Screen */
+        .start-screen {
+            text-align: center;
+            padding: 4rem 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .game-logo {
+            background: linear-gradient(135deg, var(--primary-green), var(--primary-green-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .game-logo::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, var(--primary-green), var(--primary-green-light));
+            -webkit-mask: linear-gradient(white 0%, transparent 100%);
+            mask: linear-gradient(white 0%, transparent 100%);
+            opacity: 0.1;
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { opacity: 0.1; }
+            50% { opacity: 0.3; }
+        }
+
+        .game-tagline {
+            color: var(--neutral-600);
+            margin-bottom: 3rem;
+            font-size: 1.5rem;
+        }
+
+        .start-button {
+            background: linear-gradient(135deg, var(--primary-green), var(--primary-green-light));
+            color: white;
+            border: none;
+            padding: 1.5rem 4rem;
+            border-radius: 1rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .start-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .start-button:hover::before {
+            left: 100%;
+        }
+
+        .start-button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .how-to-play {
+            background: var(--neutral-50);
+            padding: 2.5rem;
+            border-radius: 1.5rem;
+            margin-top: 3rem;
+            text-align: left;
+            border: 1px solid var(--neutral-200);
+        }
+
+        .how-to-play h3 {
+            color: var(--primary-green-dark);
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+        }
+
+        .how-to-play ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .how-to-play li {
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--neutral-200);
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            font-size: 1.125rem;
+        }
+
+        .how-to-play li:last-child {
+            border-bottom: none;
+        }
+
+        .step-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            background: var(--primary-green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        /* Game Screen */
+        .game-screen {
+            display: none;
+        }
+
+        .game-header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 2rem;
+            border-radius: 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .game-title {
+            color: var(--primary-green-dark);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .game-stats {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .stat-box {
+            background: var(--primary-green);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 1rem;
+            text-align: center;
+            min-width: 5rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            display: block;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 0.25rem;
+        }
+
+        .case-container {
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .case-number {
+            color: var(--neutral-500);
+            font-weight: 500;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-size: 1.125rem;
+        }
+
+        .fake-ad {
+            background: linear-gradient(135deg, #dc2626 0%, #ef4444 50%, #f87171 100%);
+            color: white;
+            padding: 2.5rem;
+            border-radius: 1.5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-xl);
+        }
+
+        .fake-ad::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            animation: rotate 10s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .eco-badge {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .company-name {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 1;
+        }
+
+        .claim-text {
+            font-size: 1.375rem;
+            line-height: 1.6;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(5px);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            z-index: 1;
+        }
+
+        .investigation-section {
+            margin-top: 2.5rem;
+        }
+
+        .investigation-title {
+            color: var(--primary-green-dark);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .investigation-hint {
+            color: var(--neutral-500);
+            font-size: 1.125rem;
+            font-weight: 400;
+            margin-left: auto;
+        }
+
+        .evidence-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .evidence-card {
+            background: var(--neutral-50);
+            border: 2px solid var(--neutral-200);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .evidence-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, var(--primary-green), var(--primary-green-light));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .evidence-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-green);
+        }
+
+        .evidence-card.selected {
+            border-color: var(--primary-green);
+            background: var(--primary-green);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .evidence-card.selected::before {
+            opacity: 1;
+        }
+
+        .evidence-card.selected .evidence-type,
+        .evidence-card.selected .evidence-description {
+            position: relative;
+            z-index: 1;
+        }
+
+        .evidence-card.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            z-index: 2;
+        }
+
+        .evidence-type {
+            font-weight: 600;
+            color: var(--primary-green-dark);
+            margin-bottom: 0.5rem;
+            font-size: 1.125rem;
+        }
+
+        .evidence-card.selected .evidence-type {
+            color: white;
+        }
+
+        .evidence-description {
+            color: var(--neutral-600);
+            line-height: 1.5;
+            font-size: 1.125rem;
+        }
+
+        .evidence-card.selected .evidence-description {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2.5rem;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 1rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            min-width: 12rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-orange), #fbbf24);
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-secondary {
+            background: var(--neutral-600);
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            background: var(--neutral-700);
+        }
+
+        /* Judge Screen */
+        .judge-screen {
+            display: none;
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .courtroom {
+            padding: 3rem;
+        }
+
+        .judge-avatar {
+            width: 10rem;
+            height: 10rem;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--secondary-blue), #60a5fa);
+            margin: 0 auto 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            box-shadow: var(--shadow-xl);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .judge-avatar::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+            animation: rotate 8s linear infinite;
+        }
+
+        .judge-name {
+            color: var(--secondary-blue-dark);
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+        }
+
+        .judge-speech {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            padding: 2rem;
+            border-radius: 1.5rem;
+            margin-bottom: 2rem;
+            border: 2px solid #f59e0b;
+            position: relative;
+            font-size: 1.125rem;
+            line-height: 1.6;
+            min-height: 6rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--neutral-700);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .judge-speech::before {
+            content: '';
+            position: absolute;
+            top: -0.75rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 0.75rem solid transparent;
+            border-right: 0.75rem solid transparent;
+            border-bottom: 0.75rem solid #f59e0b;
+        }
+
+        .verdict-box {
+            font-size: 1.5rem;
+            font-weight: 700;
+            padding: 1.5rem;
+            border-radius: 1.5rem;
+            margin: 2rem 0;
+            min-height: 5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-lg);
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+        }
+
+        .verdict-guilty {
+            background: linear-gradient(135deg, #fecaca, #fca5a5);
+            color: #dc2626;
+            border: 2px solid #ef4444;
+        }
+
+        .verdict-innocent {
+            background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+            color: #065f46;
+            border: 2px solid var(--primary-green);
+        }
+
+        .score-gained {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--primary-green);
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 1rem;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .game-container {
+                padding: 1rem;
+            }
+            
+            .game-header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .game-stats {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .evidence-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .text-display {
+                font-size: 2.5rem;
+            }
+            
+            .text-h1 {
+                font-size: 2rem;
+            }
+            
+            .case-container {
+                padding: 1.5rem;
+            }
+            
+            .courtroom {
+                padding: 2rem;
+            }
+            
+            .how-to-play {
+                padding: 1.5rem;
+            }
+            
+            .how-to-play li {
+                flex-direction: column;
+                text-align: center;
+                gap: 0.5rem;
+            }
+        }
+
+        /* Accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --neutral-50: #1f2937;
+                --neutral-100: #374151;
+                --neutral-200: #4b5563;
+                --neutral-300: #6b7280;
+                --neutral-400: #9ca3af;
+                --neutral-500: #d1d5db;
+                --neutral-600: #e5e7eb;
+                --neutral-700: #f3f4f6;
+                --neutral-800: #f9fafb;
+                --neutral-900: #ffffff;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <!-- Start Screen -->
+        <div class="start-screen card" id="startScreen">
+            <div class="game-logo text-display">🕵️ GREENWASH HUNTERS 🌱</div>
+            <div class="game-tagline text-h3">Professional Eco-Detective Experience</div>
+            <div class="game-tagline text-body">Expose corporate sustainability fraud with precision and expertise</div>
+            
+            <button class="start-button" onclick="startGame()">
+                🎮 START INVESTIGATION
+            </button>
+            
+            <div class="how-to-play">
+                <h3 class="text-h3">Investigation Protocol</h3>
+                <ul>
+                    <li>
+                        <div class="step-icon">1</div>
+                        <div>
+                            <strong>Analyze Claims:</strong> Carefully review corporate sustainability statements and identify potential discrepancies
+                        </div>
+                    </li>
+                    <li>
+                        <div class="step-icon">2</div>
+                        <div>
+                            <strong>Gather Evidence:</strong> Select documentation that contradicts or supports environmental claims
+                        </div>
+                    </li>
+                    <li>
+                        <div class="step-icon">3</div>
+                        <div>
+                            <strong>Build Case:</strong> Compile compelling evidence to present to the environmental court
+                        </div>
+                    </li>
+                    <li>
+                        <div class="step-icon">4</div>
+                        <div>
+                            <strong>Deliver Verdict:</strong> Receive professional assessment and advance your detective ranking
+                        </div>
+                    </li>
+                    <li>
+                        <div class="step-icon">5</div>
+                        <div>
+                            <strong>Progress:</strong> Build expertise through successful investigations and accuracy streaks
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div class="game-screen" id="gameScreen">
+            <div class="game-header">
+                <div class="game-title text-h2">
+                    🕵️ Environmental Investigation Unit
+                </div>
+                <div class="game-stats">
+                    <div class="stat-box">
+                        <span class="stat-number" id="score">0</span>
+                        <span class="stat-label">Score</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-number" id="level">1</span>
+                        <span class="stat-label">Level</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-number" id="streak">0</span>
+                        <span class="stat-label">Streak</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="case-container card">
+                <div class="case-number text-small" id="caseNumber">Active Investigation #1</div>
+                
+                <div class="fake-ad">
+                    <div class="eco-badge">💚 ECO-CERTIFIED</div>
+                    <div class="company-name" id="companyName">Loading...</div>
+                    <div class="claim-text" id="claimText">Loading investigation...</div>
+                </div>
+
+                <div class="investigation-section">
+                    <div class="investigation-title text-h3">
+                        🔍 Evidence Collection
+                        <span class="investigation-hint">Select suspicious evidence to build your case</span>
+                    </div>
+                    
+                    <div class="evidence-grid" id="evidenceGrid">
+                        <!-- Evidence cards will be populated by JavaScript -->
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" onclick="presentCase()" id="presentBtn">
+                            ⚖️ PRESENT EVIDENCE
+                        </button>
+                        <button class="btn btn-secondary" onclick="skipCase()">
+                            ⏭️ SKIP INVESTIGATION
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Judge Screen -->
+        <div class="judge-screen" id="judgeScreen">
+            <div class="courtroom card">
+                <div class="judge-avatar">⚖️</div>
+                <div class="judge-name text-h2">Environmental Court</div>
+                <div class="judge-name text-body">The Honorable EcoJustice Judy Presiding</div>
+                
+                <div class="judge-speech" id="judgeText">
+                    Reviewing evidence and assessing case strength...
+                </div>
+                
+                <div class="verdict-box hidden" id="verdictBox">
+                    Verdict pending...
+                </div>
+                
+                <div class="score-gained hidden" id="scoreGained">
+                    Investigation Complete: +0 points
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="nextCase()" id="nextBtn" style="display: none;">
+                        📋 NEXT INVESTIGATION
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let gameState = {
+            score: 0,
+            level: 1,
+            streak: 0,
+            currentCase: 0,
+            selectedEvidence: [],
+            totalCases: 0
+        };
+
+        const cases = [
+            {
+                company: "EcoFresh Industries",
+                claim: "Revolutionary sustainability breakthrough: Our packaging utilizes 100% biodegradable materials sourced from recycled ocean plastic. Through our comprehensive carbon-neutral manufacturing process, we've successfully planted over 1 million trees this fiscal year, establishing ourselves as the industry leader in environmental responsibility.",
+                evidence: [
+                    {
+                        type: "🏭 Manufacturing Audit Report",
+                        description: "Independent facility inspection reveals 95% virgin plastic materials in production line with minimal recycling infrastructure",
+                        isSuspicious: true
+                    },
+                    {
+                        type: "🌳 Satellite Forest Monitoring",
+                        description: "Geospatial analysis of claimed reforestation area shows only 47 newly planted trees over 12-month period",
+                        isSuspicious: true
+                    },
+                    {
+                        type: "🧪 Material Decomposition Analysis",
+                        description: "Laboratory testing indicates packaging materials require 400+ years for complete biodegradation under standard conditions",
+                        isSuspicious: true
+                    },
+                    {
+                        type: "💰 Financial Disclosure Review",
+                        description: "Corporate spending analysis: $2.3M allocated to marketing campaigns vs $45K for environmental initiatives",
+                        isSuspicious: true
+                    },
+                    {
+                        type: "📊 Carbon Footprint Assessment",
+                        description: "Third-party environmental audit confirms 23% reduction in manufacturing emissions year-over-year",
+                        isSuspicious: false
+                    },
+                    {
+                        type: "🎯 Strategic Communications Timeline",
+                        description: "Sustainability marketing campaign launch date coincides with environmental lawsuit settlement announcement",
+                        isSuspicious: true
+                    }
+                ],
+                isGreenwashing: true,
+                correctEvidence: 4
+            },
+            {
+                company: "Sustainable Solutions Corp",
+                claim: "Our solar-powered manufacturing facility operates on 100% renewable energy with independently verified carbon-neutral certification. Complete supply chain transparency ensures ethical sourcing and environmental responsibility at every stage of production.",
+                evidence: [
+                    {
+                        type: "⚡ Energy Production Audit",
+                        description: "Facility generates 103% of energy requirements through on-site solar installation, surplus energy sold to local grid",
+                        isSuspicious: false
+                    },
+                    {
+                        type: "📜 Environmental Certification Validation",
+                        description: "Current carbon-neutral certifications from three independent environmental organizations with quarterly verification",
+                        isSuspicious: false
+                    },
+                    {
+                        type: "🚛 Supply Chain Transparency Report",
+                        description: "Comprehensive documentation of all suppliers with public environmental impact assessments and ethical sourcing verification",
+                        isSuspicious: false
+                    },
+                    {
+                        type: "💡 Real-time Energy Dashboard",
+                        description: "Public access portal displaying live renewable energy usage data with 99.7% uptime over past 18 months",
+                        isSuspicious: false
+                    },
+                    {
+                        type: "🌡️ Carbon Offset Documentation",
+                        description: "Verified purchase of 120% offset credits for calculated emissions with quarterly third-party audits",
+                        isSuspicious: false
+                    },
+                    {
+                        type: "📱 Consumer Feedback Analysis",
+                        description: "Recent customer reviews indicate some packaging appears unnecessarily bulky for product size",
+                        isSuspicious: true
+                    }
+                ],
+                isGreenwashing: false,
+                correctEvidence: 1
+            },
+            {
+                company: "GreenTech Innovations",
+                claim: "Breakthrough technology: The world's first completely eco-friendly smartphone manufactured with 100% recycled materials through our proprietary zero-impact production process. Every device sold contributes to global reforestation through our verified tree-planting partnership program.",
+                evidence: [
+                    {
+                        type: "🔍 Component Material Analysis",
+                        description: "Spectroscopic analysis reveals 12% recycled content with 88% newly extracted rare earth elements from mining operations",
+                        isSuspicious: true
+                    },
+                    {
+                        type: "🏭 Production Process Assessment",
+                        description: "Manufacturing requires standard high-pollution semiconductor fabrication with significant toxic waste generation",
+                        isSuspicious: true
+                    },
+                    {
+                        type: "🌳 Reforestation Partnership Verification",
+                        description: "Legitimate partnership with certified reforestation organization documenting 150 trees planted per device sold",
+                        isSuspicious: false
+                    },
+                    {
+                        type: "💧 Water Usage Environmental Impact",
+                        description: "Manufacturing process consumes 12,000 gallons of water per device (industry average: 2,500 gallons)",
+                        isSuspicious: true
+                    },
+                    {
+                        type: "♻️ End-of-Life Recycling Program",
+                        description: "No established device take-back program or end-of-life recycling infrastructure documented",
+                        isSuspicious: true
+                    },
+                    {
+                        type: "📊 Lifecycle Environmental Assessment",
+                        description: "Comprehensive study shows 300% higher carbon footprint compared to leading competitor devices",
+                        isSuspicious: true
+                    }
+                ],
+                isGreenwashing: true,
+                correctEvidence: 5
+            }
+        ];
+
+        const judgeResponses = [
+            {
+                initial: "The court will now examine the evidence presented in this environmental investigation...",
+                deliberation: "Analyzing documentation for consistency with claimed environmental practices... Cross-referencing industry standards and regulatory compliance..."
+            },
+            {
+                initial: "This court specializes in environmental fraud detection. Let's review your case materials...",
+                deliberation: "Evaluating evidence quality and relevance to sustainability claims... Assessing corporate transparency and accountability measures..."
+            },
+            {
+                initial: "Environmental justice requires thorough investigation. Examining presented evidence...",
+                deliberation: "Conducting comprehensive analysis of environmental impact data... Determining validity of sustainability assertions..."
+            }
+        ];
+
+        function startGame() {
+            document.getElementById('startScreen').style.display = 'none';
+            document.getElementById('gameScreen').style.display = 'block';
+            loadCase();
+        }
+
+        function loadCase() {
+            const caseData = cases[gameState.currentCase];
+            
+            document.getElementById('caseNumber').textContent = `Active Investigation #${gameState.currentCase + 1}`;
+            document.getElementById('companyName').textContent = caseData.company;
+            document.getElementById('claimText').textContent = caseData.claim;
+            
+            // Load evidence
+            const evidenceGrid = document.getElementById('evidenceGrid');
+            evidenceGrid.innerHTML = '';
+            
+            caseData.evidence.forEach((evidence, index) => {
+                const evidenceCard = document.createElement('div');
+                evidenceCard.className = 'evidence-card';
+                evidenceCard.onclick = () => selectEvidence(index);
+                evidenceCard.innerHTML = `
+                    <div class="evidence-type">${evidence.type}</div>
+                    <div class="evidence-description">${evidence.description}</div>
+                `;
+                evidenceGrid.appendChild(evidenceCard);
+            });
+            
+            // Reset selection
+            gameState.selectedEvidence = [];
+            updateUI();
+        }
+
+        function selectEvidence(index) {
+            const evidenceCards = document.querySelectorAll('.evidence-card');
+            const card = evidenceCards[index];
+            
+            if (gameState.selectedEvidence.includes(index)) {
+                gameState.selectedEvidence = gameState.selectedEvidence.filter(i => i !== index);
+                card.classList.remove('selected');
+            } else {
+                gameState.selectedEvidence.push(index);
+                card.classList.add('selected');
+            }
+            
+            updateUI();
+        }
+
+        function presentCase() {
+            if (gameState.selectedEvidence.length === 0) {
+                alert("⚠️ Evidence Required: Please select at least one piece of documentation before presenting your case to the court.");
+                return;
+            }
+            
+            document.getElementById('gameScreen').style.display = 'none';
+            document.getElementById('judgeScreen').style.display = 'block';
+            
+            const responses = judgeResponses[Math.floor(Math.random() * judgeResponses.length)];
+            const judgeText = document.getElementById('judgeText');
+            judgeText.textContent = responses.initial;
+            
+            // Simulate professional deliberation
+            setTimeout(() => {
+                judgeText.textContent = responses.deliberation;
+                
+                setTimeout(() => {
+                    deliverVerdict();
+                }, 3000);
+            }, 2000);
+        }
+
+        function deliverVerdict() {
+            const caseData = cases[gameState.currentCase];
+            const judgeText = document.getElementById('judgeText');
+            const verdictBox = document.getElementById('verdictBox');
+            const scoreGained = document.getElementById('scoreGained');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            // Calculate accuracy
+            const suspiciousSelected = gameState.selectedEvidence.filter(index => 
+                caseData.evidence[index].isSuspicious
+            ).length;
+            
+            const nonSuspiciousSelected = gameState.selectedEvidence.length - suspiciousSelected;
+            
+            let isCorrect = false;
+            let points = 0;
+            let verdict = "";
+            let judgmentText = "";
+            
+            if (caseData.isGreenwashing) {
+                if (suspiciousSelected >= 3 && nonSuspiciousSelected <= 1) {
+                    isCorrect = true;
+                    points = 150 + (suspiciousSelected * 25) + (gameState.streak * 15);
+                    verdict = "CASE PROVEN: Environmental Fraud Detected";
+                    judgmentText = "Exemplary investigative work. Your evidence clearly demonstrates systematic environmental misrepresentation. The discrepancies between corporate claims and documented practices constitute clear greenwashing violations.";
+                } else if (suspiciousSelected >= 2) {
+                    isCorrect = true;
+                    points = 75 + (suspiciousSelected * 15);
+                    verdict = "CASE PROVEN: Environmental Fraud Detected";
+                    judgmentText = "Solid investigation with adequate evidence. While additional documentation would strengthen the case, your findings support charges of environmental misrepresentation.";
+                } else {
+                    isCorrect = false;
+                    points = 0;
+                    verdict = "INSUFFICIENT EVIDENCE: Case Dismissed";
+                    judgmentText = "Investigation incomplete. While environmental violations may exist, the evidence presented is insufficient to establish a pattern of systematic greenwashing.";
+                }
+            } else {
+                if (nonSuspiciousSelected >= 3 && suspiciousSelected <= 1) {
+                    isCorrect = true;
+                    points = 150 + (gameState.streak * 15);
+                    verdict = "CASE DISMISSED: Environmental Claims Verified";
+                    judgmentText = "Thorough and accurate assessment. Your investigation correctly identified legitimate environmental practices backed by verifiable documentation and third-party verification.";
+                } else if (suspiciousSelected >= 3) {
+                    isCorrect = false;
+                    points = 0;
+                    verdict = "FALSE ACCUSATION: Investigation Error";
+                    judgmentText = "Investigation error detected. The evidence indicates legitimate environmental practices. More careful analysis is required to distinguish between authentic sustainability efforts and greenwashing.";
+                } else {
+                    isCorrect = true;
+                    points = 50;
+                    verdict = "CASE DISMISSED: Environmental Claims Verified";
+                    judgmentText = "Correct conclusion reached, though the investigation showed some uncertainty. This organization demonstrates genuine environmental commitment with proper documentation.";
+                }
+            }
+            
+            // Update game state
+            if (isCorrect) {
+                gameState.streak++;
+                gameState.score += points;
+                
+                // Professional level progression
+                const newLevel = Math.floor(gameState.score / 750) + 1;
+                if (newLevel > gameState.level) {
+                    gameState.level = newLevel;
+                    points += 100; // Level advancement bonus
+                    gameState.score += 100;
+                }
+            } else {
+                gameState.streak = 0;
+            }
+            
+            // Display professional results
+            judgeText.textContent = judgmentText;
+            verdictBox.textContent = verdict;
+            verdictBox.className = `verdict-box ${isCorrect ? (caseData.isGreenwashing ? 'verdict-guilty' : 'verdict-innocent') : 'verdict-guilty'}`;
+            verdictBox.classList.remove('hidden');
+            
+            scoreGained.textContent = `Investigation Complete: +${points} points awarded`;
+            scoreGained.classList.remove('hidden');
+            
+            nextBtn.style.display = 'block';
+            
+            updateUI();
+        }
+
+        function nextCase() {
+            gameState.currentCase = (gameState.currentCase + 1) % cases.length;
+            gameState.totalCases++;
+            
+            document.getElementById('judgeScreen').style.display = 'none';
+            document.getElementById('gameScreen').style.display = 'block';
+            
+            // Reset court interface
+            document.getElementById('verdictBox').classList.add('hidden');
+            document.getElementById('scoreGained').classList.add('hidden');
+            document.getElementById('nextBtn').style.display = 'none';
+            
+            loadCase();
+        }
+
+        function skipCase() {
+            if (confirm("Skip this investigation? No points will be awarded and your streak will be reset.")) {
+                gameState.streak = 0;
+                nextCase();
+            }
+        }
+
+        function updateUI() {
+            document.getElementById('score').textContent = gameState.score.toLocaleString();
+            document.getElementById('level').textContent = gameState.level;
+            document.getElementById('streak').textContent = gameState.streak;
+            
+            // Update presentation button
+            const presentBtn = document.getElementById('presentBtn');
+            if (gameState.selectedEvidence.length > 0) {
+                presentBtn.textContent = `⚖️ PRESENT EVIDENCE (${gameState.selectedEvidence.length} selected)`;
+                presentBtn.style.opacity = '1';
+            } else {
+                presentBtn.textContent = '⚖️ PRESENT EVIDENCE';
+                presentBtn.style.opacity = '0.8';
+            }
+        }
+    </script>
+</body>
+</html> 

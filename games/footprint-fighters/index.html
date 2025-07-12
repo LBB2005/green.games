@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Footprint Fighters: Green Ops</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Orbitron', monospace;
+            background: linear-gradient(135deg, #1a4d3a 0%, #2d5a3d 50%, #1a4d3a 100%);
+            color: #00ff88;
+            overflow: hidden;
+            user-select: none;
+        }
+        
+        #gameContainer {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(0,255,136,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(76,175,80,0.1) 0%, transparent 50%),
+                linear-gradient(135deg, #0a2818 0%, #1a4d3a 100%);
+        }
+        
+        /* START SCREEN */
+        #startScreen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 50% 50%, rgba(0,255,136,0.3) 0%, transparent 70%),
+                linear-gradient(135deg, #0a2818 0%, #1a4d3a 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        #gameTitle {
+            font-size: 5rem;
+            font-weight: 900;
+            text-align: center;
+            color: #00ff88;
+            text-shadow: 
+                0 0 30px rgba(0,255,136,1),
+                0 0 60px rgba(0,255,136,0.8);
+            margin-bottom: 30px;
+            animation: titlePulse 2s infinite;
+        }
+        
+        @keyframes titlePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        #subtitle {
+            font-size: 2rem;
+            color: #4caf50;
+            text-align: center;
+            margin-bottom: 60px;
+            font-weight: 700;
+        }
+        
+        #startButton {
+            background: linear-gradient(45deg, #00ff88, #4caf50);
+            color: #000;
+            border: 4px solid #00ff88;
+            padding: 30px 80px;
+            font-size: 2.5rem;
+            font-weight: 900;
+            font-family: 'Orbitron', monospace;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 
+                0 0 50px rgba(0,255,136,0.8),
+                0 15px 30px rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
+            animation: buttonGlow 2s infinite;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            position: relative;
+        }
+        
+        @keyframes buttonGlow {
+            0%, 100% { 
+                box-shadow: 0 0 50px rgba(0,255,136,0.8), 0 15px 30px rgba(0,0,0,0.5);
+                transform: scale(1);
+            }
+            50% { 
+                box-shadow: 0 0 70px rgba(0,255,136,1), 0 20px 40px rgba(0,0,0,0.6);
+                transform: scale(1.05);
+            }
+        }
+        
+        #startButton:hover {
+            transform: scale(1.1);
+            box-shadow: 
+                0 0 80px rgba(0,255,136,1),
+                0 20px 40px rgba(0,0,0,0.6);
+        }
+        
+        #startButton::before {
+            content: '👆 CLICK ME 👆';
+            position: absolute;
+            top: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.5rem;
+            color: #00ff88;
+            animation: clickMe 1s infinite;
+        }
+        
+        @keyframes clickMe {
+            0%, 100% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            50% { opacity: 0.7; transform: translateX(-50%) translateY(-10px); }
+        }
+        
+        #quickInstructions {
+            position: absolute;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            font-size: 1.5rem;
+            color: #4caf50;
+            font-weight: 700;
+        }
+        
+        /* GAME SCREEN */
+        #gameScreen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+        }
+        
+        #gameArea {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                repeating-linear-gradient(
+                    45deg,
+                    rgba(0,255,136,0.05) 0px,
+                    rgba(0,255,136,0.05) 2px,
+                    transparent 2px,
+                    transparent 40px
+                ),
+                radial-gradient(circle at 30% 40%, rgba(76,175,80,0.2) 0%, transparent 60%),
+                linear-gradient(135deg, #1a4d3a 0%, #2d5a3d 100%);
+            overflow: hidden;
+        }
+        
+        #player {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(45deg, #00ff88, #4caf50);
+            border: 4px solid #00ff88;
+            border-radius: 50%;
+            box-shadow: 
+                0 0 30px rgba(0,255,136,0.8),
+                inset 0 0 15px rgba(255,255,255,0.3);
+            transition: all 0.1s ease;
+            z-index: 10;
+        }
+        
+        #player::before {
+            content: '🌱';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 25px;
+        }
+        
+        .enemy {
+            position: absolute;
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(45deg, #ff4444, #cc0000);
+            border: 3px solid #ff0000;
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(255,0,0,0.7);
+            animation: enemyPulse 2s infinite;
+            z-index: 5;
+        }
+        
+        .enemy::before {
+            content: '🏭';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 22px;
+        }
+        
+        .enemy-label {
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255,0,0,0.9);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+            z-index: 10;
+        }
+        
+        @keyframes enemyPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .objective {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #ffd700, #ffb300);
+            border: 4px solid #ffd700;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(255,215,0,0.8);
+            animation: objectiveGlow 2s infinite;
+            z-index: 5;
+        }
+        
+        .objective::before {
+            content: '📁';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 30px;
+        }
+        
+        .objective-label {
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255,215,0,0.9);
+            color: #000;
+            padding: 5px 10px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+            z-index: 10;
+        }
+        
+        @keyframes objectiveGlow {
+            0%, 100% { box-shadow: 0 0 30px rgba(255,215,0,0.8); }
+            50% { box-shadow: 0 0 50px rgba(255,215,0,1); }
+        }
+        
+        #leafyDrone {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(45deg, #8bc34a, #4caf50);
+            border: 3px solid #4caf50;
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(139,195,74,0.8);
+            animation: droneFloat 3s infinite ease-in-out;
+            z-index: 15;
+        }
+        
+        #leafyDrone::before {
+            content: '🍃';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 20px;
+        }
+        
+        @keyframes droneFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        #leafyDialogue {
+            position: absolute;
+            background: rgba(0,0,0,0.9);
+            color: #4caf50;
+            padding: 20px 25px;
+            border-radius: 25px;
+            border: 3px solid #4caf50;
+            font-size: 16px;
+            max-width: 400px;
+            box-shadow: 0 0 30px rgba(76,175,80,0.6);
+            z-index: 20;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.3s ease;
+            font-weight: 700;
+        }
+        
+        #leafyDialogue.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        #leafyDialogue::before {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 40px;
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 15px solid #4caf50;
+        }
+        
+        /* GIANT INSTRUCTION OVERLAY */
+        #instructionOverlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 300;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        #instructionOverlay.show {
+            opacity: 1;
+        }
+        
+        .instruction-step {
+            background: rgba(0,255,136,0.1);
+            border: 3px solid #00ff88;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 15px;
+            text-align: center;
+            font-size: 2rem;
+            color: #00ff88;
+            font-weight: 700;
+            width: 80%;
+            max-width: 600px;
+            box-shadow: 0 0 40px rgba(0,255,136,0.4);
+        }
+        
+        .instruction-step .key {
+            background: #00ff88;
+            color: #000;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 900;
+            margin: 0 10px;
+        }
+        
+        .instruction-step .icon {
+            font-size: 3rem;
+            margin: 0 20px;
+        }
+        
+        #skipButton {
+            background: linear-gradient(45deg, #00ff88, #4caf50);
+            color: #000;
+            border: none;
+            padding: 20px 40px;
+            font-size: 1.5rem;
+            font-weight: 900;
+            font-family: 'Orbitron', monospace;
+            border-radius: 15px;
+            cursor: pointer;
+            margin-top: 30px;
+            transition: all 0.3s ease;
+        }
+        
+        #skipButton:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(0,255,136,0.6);
+        }
+        
+        /* ARROW INDICATORS */
+        .arrow-indicator {
+            position: absolute;
+            font-size: 4rem;
+            color: #00ff88;
+            animation: arrowBounce 2s infinite;
+            z-index: 50;
+            text-shadow: 0 0 20px rgba(0,255,136,0.8);
+            font-weight: 900;
+        }
+        
+        @keyframes arrowBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        /* SIMPLE HUD */
+        #simpleHUD {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0,0,0,0.9);
+            color: #00ff88;
+            padding: 20px;
+            border-radius: 15px;
+            border: 3px solid #00ff88;
+            font-size: 1.5rem;
+            font-weight: 700;
+            z-index: 100;
+            box-shadow: 0 0 30px rgba(0,255,136,0.5);
+        }
+        
+        #simpleHUD div {
+            margin-bottom: 10px;
+        }
+        
+        #simpleHUD .number {
+            color: #ffd700;
+            font-size: 2rem;
+            font-weight: 900;
+        }
+        
+        /* CONTROLS HINT */
+        #controlsHint {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.9);
+            color: #00ff88;
+            padding: 20px 30px;
+            border-radius: 15px;
+            border: 3px solid #00ff88;
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-align: center;
+            z-index: 100;
+            animation: controlsGlow 3s infinite;
+        }
+        
+        @keyframes controlsGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(0,255,136,0.5); }
+            50% { box-shadow: 0 0 40px rgba(0,255,136,0.8); }
+        }
+        
+        .control-key {
+            background: #00ff88;
+            color: #000;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: 900;
+            margin: 0 5px;
+        }
+        
+        #messageBox {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.9);
+            color: #00ff88;
+            padding: 30px 40px;
+            border-radius: 20px;
+            border: 4px solid #00ff88;
+            font-size: 2rem;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(0,255,136,0.8);
+            z-index: 150;
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.8);
+            transition: all 0.5s ease;
+            font-weight: 700;
+        }
+        
+        #messageBox.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+        
+        #victoryScreen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 500;
+        }
+        
+        #victoryTitle {
+            font-size: 5rem;
+            color: #00ff88;
+            text-shadow: 0 0 50px rgba(0,255,136,1);
+            margin-bottom: 40px;
+            animation: victoryPulse 2s infinite;
+            font-weight: 900;
+        }
+        
+        @keyframes victoryPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        #playAgainButton {
+            background: linear-gradient(45deg, #00ff88, #4caf50);
+            color: #000;
+            border: none;
+            padding: 25px 50px;
+            font-size: 2rem;
+            font-weight: 900;
+            font-family: 'Orbitron', monospace;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-top: 40px;
+            transition: all 0.3s ease;
+            animation: buttonGlow 2s infinite;
+        }
+        
+        #playAgainButton:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 50px rgba(0,255,136,0.8);
+        }
+        
+        .explosion {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle, #ff6b35 0%, #f7931e 50%, transparent 100%);
+            border-radius: 50%;
+            animation: explode 1s ease-out forwards;
+            z-index: 25;
+        }
+        
+        @keyframes explode {
+            0% { transform: scale(0.1); opacity: 1; }
+            100% { transform: scale(3); opacity: 0; }
+        }
+        
+        .score-popup {
+            position: absolute;
+            color: #ffd700;
+            font-size: 2rem;
+            font-weight: 900;
+            pointer-events: none;
+            animation: scoreFloat 2s ease-out forwards;
+            z-index: 50;
+            text-shadow: 0 0 10px rgba(255,215,0,0.8);
+        }
+        
+        @keyframes scoreFloat {
+            0% { transform: translateY(0px); opacity: 1; }
+            100% { transform: translateY(-80px); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div id="gameContainer">
+        <!-- START SCREEN -->
+        <div id="startScreen">
+            <div id="gameTitle">FOOTPRINT<br>FIGHTERS</div>
+            <div id="subtitle">🌱 SAVE THE PLANET 🌱</div>
+            <button id="startButton">START GAME</button>
+            <div id="quickInstructions">
+                Move around • Collect files • Avoid enemies • Save Earth!
+            </div>
+        </div>
+        
+        <!-- GAME SCREEN -->
+        <div id="gameScreen">
+            <div id="gameArea">
+                <div id="player"></div>
+                <div id="leafyDrone"></div>
+                <div id="leafyDialogue"></div>
+                <div id="messageBox"></div>
+                
+                <!-- INSTRUCTION OVERLAY -->
+                <div id="instructionOverlay">
+                    <div class="instruction-step">
+                        <div class="icon">🎮</div>
+                        Use <span class="key">W A S D</span> to move around
+                    </div>
+                    <div class="instruction-step">
+                        <div class="icon">📁</div>
+                        Walk into <span style="color: #ffd700;">GOLDEN FILES</span> to collect them
+                    </div>
+                    <div class="instruction-step">
+                        <div class="icon">🏭</div>
+                        Stay away from <span style="color: #ff4444;">RED ENEMIES</span>
+                    </div>
+                    <div class="instruction-step">
+                        <div class="icon">🏆</div>
+                        Collect all 3 files to win!
+                    </div>
+                    <button id="skipButton">GOT IT - LET'S GO!</button>
+                </div>
+                
+                <!-- ARROWS POINTING TO OBJECTIVES -->
+                <div class="arrow-indicator" id="arrow1" style="display: none;">↙️</div>
+                <div class="arrow-indicator" id="arrow2" style="display: none;">↘️</div>
+                <div class="arrow-indicator" id="arrow3" style="display: none;">↖️</div>
+            </div>
+            
+            <!-- SIMPLE HUD -->
+            <div id="simpleHUD">
+                <div>FILES LEFT: <span class="number" id="filesLeft">3</span></div>
+                <div>SCORE: <span class="number" id="score">0</span></div>
+            </div>
+            
+            <!-- CONTROLS HINT -->
+            <div id="controlsHint">
+                <span class="control-key">W A S D</span> = Move • Walk into golden files to collect them!
+            </div>
+        </div>
+        
+        <!-- VICTORY SCREEN -->
+        <div id="victoryScreen">
+            <div id="victoryTitle">🎉 YOU WON! 🎉</div>
+            <div id="victoryStats"></div>
+            <button id="playAgainButton">PLAY AGAIN</button>
+        </div>
+    </div>
+
+    <script>
+        class FootprintFighters {
+            constructor() {
+                this.gameState = 'start';
+                this.player = {
+                    x: 100,
+                    y: 100,
+                    element: null,
+                    speed: 5
+                };
+                
+                this.leafy = {
+                    x: 150,
+                    y: 150,
+                    element: null,
+                    lastQuip: 0
+                };
+                
+                this.enemies = [];
+                this.objectives = [];
+                this.gameStats = {
+                    filesLeft: 3,
+                    score: 0,
+                    gameWon: false
+                };
+                
+                this.leafyQuips = [
+                    "Great job, eco-warrior! 🌱",
+                    "You're saving the planet! 🌍",
+                    "That's how we fight pollution! 💪",
+                    "Go green, go team! 🌿",
+                    "Climate action hero! ⚡",
+                    "Mother Earth is proud! 🌳",
+                    "Keep up the good work! 🏆",
+                    "Eco-mission in progress! 🚀"
+                ];
+                
+                this.keys = {};
+                this.instructionStep = 0;
+                this.arrowsShown = false;
+                this.setupEventListeners();
+                this.showStartScreen();
+            }
+            
+            setupEventListeners() {
+                document.getElementById('startButton').addEventListener('click', () => {
+                    this.startGame();
+                });
+                
+                document.getElementById('skipButton').addEventListener('click', () => {
+                    this.hideInstructions();
+                });
+                
+                document.getElementById('playAgainButton').addEventListener('click', () => {
+                    this.resetGame();
+                });
+                
+                document.addEventListener('keydown', (e) => {
+                    if (this.gameState !== 'playing') return;
+                    this.keys[e.key.toLowerCase()] = true;
+                });
+                
+                document.addEventListener('keyup', (e) => {
+                    this.keys[e.key.toLowerCase()] = false;
+                });
+            }
+            
+            showStartScreen() {
+                document.getElementById('startScreen').style.display = 'flex';
+                document.getElementById('gameScreen').style.display = 'none';
+                document.getElementById('victoryScreen').style.display = 'none';
+            }
+            
+            startGame() {
+                this.gameState = 'playing';
+                document.getElementById('startScreen').style.display = 'none';
+                document.getElementById('gameScreen').style.display = 'block';
+                
+                this.initializeGame();
+                this.showInstructions();
+                this.gameLoop();
+            }
+            
+            showInstructions() {
+                const overlay = document.getElementById('instructionOverlay');
+                overlay.classList.add('show');
+            }
+            
+            hideInstructions() {
+                const overlay = document.getElementById('instructionOverlay');
+                overlay.classList.remove('show');
+                this.showMessage("Collect all 3 golden files to save the planet!");
+                this.showArrows();
+                this.showLeafyQuip("Let's go save the Earth! 🌍");
+            }
+            
+            showArrows() {
+                // Point arrows at objectives
+                setTimeout(() => {
+                    document.getElementById('arrow1').style.display = 'block';
+                    document.getElementById('arrow1').style.left = '550px';
+                    document.getElementById('arrow1').style.top = '80px';
+                    
+                    document.getElementById('arrow2').style.display = 'block';
+                    document.getElementById('arrow2').style.left = '300px';
+                    document.getElementById('arrow2').style.top = '300px';
+                    
+                    document.getElementById('arrow3').style.display = 'block';
+                    document.getElementById('arrow3').style.left = '700px';
+                    document.getElementById('arrow3').style.top = '400px';
+                    
+                    this.arrowsShown = true;
+                }, 500);
+            }
+            
+            hideArrows() {
+                document.getElementById('arrow1').style.display = 'none';
+                document.getElementById('arrow2').style.display = 'none';
+                document.getElementById('arrow3').style.display = 'none';
+                this.arrowsShown = false;
+            }
+            
+            initializeGame() {
+                this.player.element = document.getElementById('player');
+                this.leafy.element = document.getElementById('leafyDrone');
+                
+                this.gameStats = {
+                    filesLeft: 3,
+                    score: 0,
+                    gameWon: false
+                };
+                
+                this.clearGameElements();
+                
+                // Create 3 easy-to-reach objectives
+                this.createObjective(600, 150);
+                this.createObjective(350, 350);
+                this.createObjective(750, 450);
+                
+                // Create just 2 slow-moving enemies
+                this.createEnemy(400, 200);
+                this.createEnemy(500, 400);
+                
+                this.player.x = 100;
+                this.player.y = 100;
+                this.updatePlayerPosition();
+            }
+            
+            clearGameElements() {
+                const gameArea = document.getElementById('gameArea');
+                const elementsToRemove = gameArea.querySelectorAll('.enemy, .objective, .explosion, .score-popup');
+                elementsToRemove.forEach(el => el.remove());
+                
+                this.enemies = [];
+                this.objectives = [];
+            }
+            
+            createEnemy(x, y) {
+                const enemy = document.createElement('div');
+                enemy.className = 'enemy';
+                enemy.style.left = x + 'px';
+                enemy.style.top = y + 'px';
+                document.getElementById('gameArea').appendChild(enemy);
+                
+                this.enemies.push({
+                    x: x,
+                    y: y,
+                    element: enemy,
+                    patrolAngle: Math.random() * Math.PI * 2,
+                    originalX: x,
+                    originalY: y,
+                    speed: 0.5 // Very slow
+                });
+            }
+            
+            createObjective(x, y) {
+                const objective = document.createElement('div');
+                objective.className = 'objective';
+                objective.style.left = x + 'px';
+                objective.style.top = y + 'px';
+                document.getElementById('gameArea').appendChild(objective);
+                
+                this.objectives.push({
+                    x: x,
+                    y: y,
+                    element: objective,
+                    collected: false
+                });
+            }
+            
+            updatePlayer() {
+                if (this.gameState !== 'playing') return;
+                
+                let dx = 0, dy = 0;
+                
+                if (this.keys['a'] || this.keys['arrowleft']) dx = -this.player.speed;
+                if (this.keys['d'] || this.keys['arrowright']) dx = this.player.speed;
+                if (this.keys['w'] || this.keys['arrowup']) dy = -this.player.speed;
+                if (this.keys['s'] || this.keys['arrowdown']) dy = this.player.speed;
+                
+                const gameArea = document.getElementById('gameArea');
+                const maxX = gameArea.clientWidth - 50;
+                const maxY = gameArea.clientHeight - 50;
+                
+                this.player.x = Math.max(0, Math.min(maxX, this.player.x + dx));
+                this.player.y = Math.max(0, Math.min(maxY, this.player.y + dy));
+                
+                this.updatePlayerPosition();
+                this.updateLeafy();
+                this.checkObjectiveCollisions();
+            }
+            
+            updatePlayerPosition() {
+                this.player.element.style.left = this.player.x + 'px';
+                this.player.element.style.top = this.player.y + 'px';
+            }
+            
+            updateLeafy() {
+                const targetX = this.player.x + 80;
+                const targetY = this.player.y - 40;
+                
+                this.leafy.x += (targetX - this.leafy.x) * 0.1;
+                this.leafy.y += (targetY - this.leafy.y) * 0.1;
+                
+                this.leafy.element.style.left = this.leafy.x + 'px';
+                this.leafy.element.style.top = this.leafy.y + 'px';
+            }
+            
+            updateEnemies() {
+                this.enemies.forEach(enemy => {
+                    // Very slow, predictable movement
+                    enemy.patrolAngle += 0.008;
+                    enemy.x = enemy.originalX + Math.sin(enemy.patrolAngle) * 30;
+                    enemy.y = enemy.originalY + Math.cos(enemy.patrolAngle) * 20;
+                    
+                    enemy.element.style.left = enemy.x + 'px';
+                    enemy.element.style.top = enemy.y + 'px';
+                    
+                    // Check collision with player
+                    const distance = Math.sqrt(
+                        Math.pow(this.player.x - enemy.x, 2) + 
+                        Math.pow(this.player.y - enemy.y, 2)
+                    );
+                    
+                    if (distance < 60) {
+                        // Just reduce score, don't end game
+                        this.gameStats.score = Math.max(0, this.gameStats.score - 5);
+                        this.showMessage("Oops! Stay away from the red enemies!");
+                        this.showLeafyQuip("Watch out for those polluters! 🏭");
+                    }
+                });
+            }
+            
+            checkObjectiveCollisions() {
+                this.objectives.forEach(objective => {
+                    if (objective.collected) return;
+                    
+                    const distance = Math.sqrt(
+                        Math.pow(this.player.x - objective.x, 2) + 
+                        Math.pow(this.player.y - objective.y, 2)
+                    );
+                    
+                    if (distance < 70) {
+                        objective.collected = true;
+                        objective.element.style.display = 'none';
+                        this.gameStats.filesLeft--;
+                        this.gameStats.score += 100;
+                        
+                        this.createExplosion(objective.x, objective.y);
+                        this.showScorePopup(objective.x, objective.y, "+100!");
+                        this.showMessage(`Great job! ${this.gameStats.filesLeft} files left!`);
+                        this.showLeafyQuip("Awesome! You're saving the planet! 🌍");
+                        
+                        if (this.gameStats.filesLeft === 0) {
+                            this.hideArrows();
+                            setTimeout(() => {
+                                this.showVictory();
+                            }, 1000);
+                        }
+                    }
+                });
+            }
+            
+            createExplosion(x, y) {
+                const explosion = document.createElement('div');
+                explosion.className = 'explosion';
+                explosion.style.left = (x - 60) + 'px';
+                explosion.style.top = (y - 60) + 'px';
+                document.getElementById('gameArea').appendChild(explosion);
+                
+                setTimeout(() => {
+                    explosion.remove();
+                }, 1000);
+            }
+            
+            showScorePopup(x, y, text) {
+                const popup = document.createElement('div');
+                popup.className = 'score-popup';
+                popup.textContent = text;
+                popup.style.left = x + 'px';
+                popup.style.top = y + 'px';
+                document.getElementById('gameArea').appendChild(popup);
+                
+                setTimeout(() => {
+                    popup.remove();
+                }, 2000);
+            }
+            
+            showLeafyQuip(customQuip = null) {
+                const quip = customQuip || this.leafyQuips[Math.floor(Math.random() * this.leafyQuips.length)];
+                const dialogue = document.getElementById('leafyDialogue');
+                
+                dialogue.textContent = quip;
+                dialogue.style.left = (this.leafy.x - 180) + 'px';
+                dialogue.style.top = (this.leafy.y - 100) + 'px';
+                dialogue.classList.add('show');
+                
+                this.leafy.lastQuip = Date.now();
+                
+                setTimeout(() => {
+                    dialogue.classList.remove('show');
+                }, 3000);
+            }
+            
+            showMessage(text) {
+                const messageBox = document.getElementById('messageBox');
+                messageBox.textContent = text;
+                messageBox.classList.add('show');
+                
+                setTimeout(() => {
+                    messageBox.classList.remove('show');
+                }, 3000);
+            }
+            
+            showVictory() {
+                this.gameState = 'victory';
+                const victoryScreen = document.getElementById('victoryScreen');
+                const victoryStats = document.getElementById('victoryStats');
+                
+                victoryStats.innerHTML = `
+                    <p style="font-size: 2.5rem; color: #4caf50; margin-bottom: 20px;">
+                        🌱 Planet Earth Saved! 🌱
+                    </p>
+                    <p style="font-size: 2rem; color: #ffd700; margin-bottom: 20px;">
+                        🏆 Final Score: ${this.gameStats.score}
+                    </p>
+                    <p style="font-size: 1.5rem; color: #00ff88;">
+                        You're an environmental hero! 🦸‍♂️
+                    </p>
+                `;
+                
+                victoryScreen.style.display = 'flex';
+                this.showLeafyQuip("Mission accomplished! You saved the world! 🌍🎉");
+            }
+            
+            resetGame() {
+                this.gameState = 'start';
+                this.hideArrows();
+                this.showStartScreen();
+                this.clearGameElements();
+            }
+            
+            updateUI() {
+                if (this.gameState !== 'playing') return;
+                
+                document.getElementById('filesLeft').textContent = this.gameStats.filesLeft;
+                document.getElementById('score').textContent = this.gameStats.score;
+            }
+            
+            gameLoop() {
+                if (this.gameState === 'playing') {
+                    this.updatePlayer();
+                    this.updateEnemies();
+                    this.updateUI();
+                }
+                
+                requestAnimationFrame(() => this.gameLoop());
+            }
+        }
+        
+        // Start the game
+        window.addEventListener('load', () => {
+            new FootprintFighters();
+        });
+    </script>
+</body>
+</html> 

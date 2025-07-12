@@ -13,6 +13,34 @@
 // List of games - ADD YOUR DAD'S GAMES HERE
 const GAMES = [
     {
+        id: 'thrift-shop-hero',
+        title: 'Thrift Shop Hero',
+        description: 'Battle fast fashion villains by building a sustainable outfit! Shop for thrifted clothes and defeat greedy corporations.',
+        icon: '🧥',
+        url: 'games/thrift-shop-hero/index.html'
+    },
+    {
+        id: 'footprint-fighters',
+        title: 'Footprint Fighters',
+        description: 'Save the planet as an eco-warrior! Move around, collect environmental files, and avoid pollution enemies.',
+        icon: '🌱',
+        url: 'games/footprint-fighters/index.html'
+    },
+    {
+        id: 'greenwash-hunters-pro',
+        title: 'Greenwash Hunters Pro',
+        description: 'Professional eco-detective experience! Investigate corporate sustainability fraud and expose greenwashing tactics.',
+        icon: '🕵️',
+        url: 'games/greenwash-hunters-pro/index.html'
+    },
+    {
+        id: 'compost-clash',
+        title: 'Compost Clash',
+        description: 'Epic composting battle game! Choose your decomposer team and fight for the ultimate compost dominance.',
+        icon: '🦠',
+        url: 'games/compost-clash/index.html'
+    },
+    {
         id: 'carbon-detective',
         title: 'Carbon Detective',
         description: 'Discover the hidden carbon footprints in everyday choices through this interactive quiz game!',
@@ -67,6 +95,41 @@ const GAMES = [
         description: 'Strategic card game where you compete to reduce your city\'s carbon footprint using technology, policy, and lifestyle changes.',
         icon: '⚡',
         url: 'games/carbon-clash/index.html'
+    },
+    {
+        id: 'carbon-cleaner',
+        title: 'Carbon Cleaner',
+        description: 'Clean up the atmosphere by removing carbon dioxide! Use advanced technology to capture and store carbon emissions.',
+        icon: '🌫️',
+        url: 'games/carbon-cleaner/index.html'
+    },
+    {
+        id: 'ocean-rescue',
+        title: 'Ocean Rescue',
+        description: 'Save marine life by cleaning up ocean pollution! Remove plastic waste and protect endangered species.',
+        icon: '🌊',
+        url: 'games/ocean-rescue/index.html'
+    },
+    {
+        id: 'solar-surge',
+        title: 'Solar Surge',
+        description: 'Harness the power of the sun! Build solar panel arrays and manage renewable energy distribution.',
+        icon: '☀️',
+        url: 'games/solar-surge/index.html'
+    },
+    {
+        id: 'tree-tower',
+        title: 'Tree Tower',
+        description: 'Grow towering forests and create thriving ecosystems! Plant trees, manage resources, and fight deforestation.',
+        icon: '🌳',
+        url: 'games/tree-tower/index.html'
+    },
+    {
+        id: 'wind-runner',
+        title: 'Wind Runner',
+        description: 'Race through wind farms while learning about renewable energy! Collect wind power and avoid fossil fuel obstacles.',
+        icon: '🌪️',
+        url: 'games/wind-runner/index.html'
     }
     // Example of how to add more games:
     // {

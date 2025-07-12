@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thrift Shop Hero: Battle of the Brands</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial Black', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .game-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .game-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .game-title {
+            font-size: 2.5em;
+            color: #fff;
+            text-shadow: 3px 3px 0px #000;
+            margin-bottom: 5px;
+        }
+
+        .game-subtitle {
+            font-size: 1.1em;
+            color: #ffeb3b;
+            text-shadow: 2px 2px 0px #000;
+            margin-bottom: 10px;
+        }
+
+        .objective {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 15px;
+            color: #fff;
+            text-align: center;
+            font-size: 1.1em;
+            border: 2px solid #ffeb3b;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            border: 3px solid #fff;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4ecdc4, #44a08d);
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: bold;
+            text-shadow: 1px 1px 0px #000;
+        }
+
+        .game-screen {
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 20px;
+            padding: 25px;
+            border: 4px solid #ff6b6b;
+            box-shadow: 0 0 30px rgba(255, 107, 107, 0.5);
+        }
+
+        .top-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .budget-display {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            border-radius: 15px;
+            padding: 15px 25px;
+            color: #fff;
+            font-size: 1.3em;
+            font-weight: bold;
+            border: 3px solid #fff;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .power-level {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            border-radius: 15px;
+            padding: 15px 25px;
+            color: #fff;
+            font-size: 1.3em;
+            font-weight: bold;
+            border: 3px solid #fff;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .outfit-preview {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 3px solid #fff;
+            text-align: center;
+        }
+
+        .outfit-title {
+            color: #fff;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 0px #000;
+        }
+
+        .outfit-slots {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .outfit-slot {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5em;
+            border: 3px solid #fff;
+            transition: all 0.3s ease;
+        }
+
+        .outfit-slot.filled {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(78, 205, 196, 0.5);
+        }
+
+        .shop-section {
+            margin-bottom: 25px;
+        }
+
+        .shop-title {
+            color: #fff;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            text-align: center;
+            text-shadow: 2px 2px 0px #000;
+        }
+
+        .shop-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+        }
+
+        .item-card {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            border: 3px solid #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .item-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(255, 107, 107, 0.5);
+        }
+
+        .item-card.purchased {
+            background: linear-gradient(135deg, #666, #555);
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .item-card.too-expensive {
+            background: linear-gradient(135deg, #888, #666);
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .item-emoji {
+            font-size: 2.5em;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .item-name {
+            font-size: 1.1em;
+            color: #fff;
+            margin-bottom: 8px;
+            text-shadow: 1px 1px 0px #000;
+        }
+
+        .item-power {
+            font-size: 1.2em;
+            color: #ffeb3b;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .item-price {
+            font-size: 1.1em;
+            color: #fff;
+            font-weight: bold;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 5px 10px;
+            border-radius: 10px;
+        }
+
+        .battle-section {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .boss-display {
+            background: linear-gradient(135deg, #ff416c, #ff4b2b);
+            border-radius: 20px;
+            padding: 25px;
+            border: 4px solid #fff;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(255, 65, 108, 0.4);
+        }
+
+        .boss-emoji {
+            font-size: 3em;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .boss-name {
+            font-size: 1.8em;
+            color: #fff;
+            margin-bottom: 10px;
+            text-shadow: 3px 3px 0px #000;
+        }
+
+        .boss-weakness {
+            color: #ffeb3b;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+        }
+
+        .battle-btn {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            border: none;
+            color: #fff;
+            font-size: 1.4em;
+            padding: 15px 40px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            text-shadow: 1px 1px 0px #000;
+            border: 3px solid #fff;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .battle-btn:hover:not(:disabled) {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(78, 205, 196, 0.5);
+        }
+
+        .battle-btn:disabled {
+            background: #666;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .victory-message {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 3px solid #fff;
+            color: #fff;
+            font-size: 1.2em;
+            animation: victoryPulse 2s infinite;
+        }
+
+        @keyframes victoryPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            color: #fff;
+            font-size: 1.1em;
+            padding: 12px 25px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            border: 3px solid #fff;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .control-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .combo-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #ffeb3b, #ff9800);
+            color: #000;
+            padding: 20px 40px;
+            border-radius: 20px;
+            font-size: 1.8em;
+            font-weight: bold;
+            border: 4px solid #fff;
+            z-index: 1000;
+            animation: comboAppear 3s ease-in-out;
+            text-shadow: 2px 2px 0px #fff;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        @keyframes comboAppear {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.3) rotate(-10deg); }
+            20% { opacity: 1; transform: translate(-50%, -50%) scale(1.2) rotate(5deg); }
+            80% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8) rotate(0deg); }
+        }
+
+        .tutorial-hint {
+            background: rgba(255, 235, 59, 0.2);
+            border: 2px solid #ffeb3b;
+            border-radius: 10px;
+            padding: 10px;
+            margin: 10px 0;
+            color: #ffeb3b;
+            font-size: 0.9em;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .game-title {
+                font-size: 2em;
+            }
+            
+            .top-section {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .shop-items {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .outfit-slots {
+                gap: 10px;
+            }
+            
+            .outfit-slot {
+                width: 60px;
+                height: 60px;
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="game-header">
+            <h1 class="game-title">🧥 THRIFT SHOP HERO</h1>
+            <p class="game-subtitle">Battle of the Brands</p>
+        </div>
+
+        <div class="objective">
+            <strong>MISSION:</strong> Build a sustainable outfit to defeat fast fashion villains!
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill" style="width: 0%;">
+                <span id="progress-text">0% Ready to Battle</span>
+            </div>
+        </div>
+
+        <div class="game-screen">
+            <div class="top-section">
+                <div class="budget-display">
+                    💰 Budget: $<span id="budget">50</span>
+                </div>
+                <div class="power-level">
+                    ⚡ Eco-Power: <span id="eco-power">0</span>
+                </div>
+            </div>
+
+            <div class="outfit-preview">
+                <h3 class="outfit-title">Your Sustainable Outfit</h3>
+                <div class="outfit-slots">
+                    <div class="outfit-slot" id="slot-0">👕</div>
+                    <div class="outfit-slot" id="slot-1">👖</div>
+                    <div class="outfit-slot" id="slot-2">👟</div>
+                    <div class="outfit-slot" id="slot-3">🧥</div>
+                </div>
+            </div>
+
+            <div class="shop-section">
+                <h3 class="shop-title">🛍️ Thrift Shop - Click to Buy!</h3>
+                <div class="tutorial-hint" id="tutorial-hint">
+                    💡 Buy items to increase your Eco-Power! Each item saves the planet and makes you stronger!
+                </div>
+                <div class="shop-items" id="shop-items">
+                    <!-- Items populated by JavaScript -->
+                </div>
+            </div>
+
+            <div class="battle-section">
+                <div class="boss-display">
+                    <div class="boss-emoji" id="boss-emoji">👹</div>
+                    <div class="boss-name" id="boss-name">Shein of Sin</div>
+                    <div class="boss-weakness" id="boss-weakness">
+                        Weakness: Needs 25 Eco-Power to defeat!
+                    </div>
+                    <button class="battle-btn" id="battle-btn" onclick="battle()">
+                        🚀 BATTLE NOW!
+                    </button>
+                </div>
+                <div id="victory-message" class="victory-message" style="display: none;"></div>
+            </div>
+
+            <div class="controls">
+                <button class="control-btn" onclick="newGame()">🔄 New Game</button>
+                <button class="control-btn" onclick="newItems()">🛒 New Items</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simplified game state
+        let game = {
+            budget: 50,
+            ecoPower: 0,
+            outfit: [],
+            currentBoss: 0,
+            itemsPurchased: 0
+        };
+
+        // Simplified items - just the essentials
+        const items = [
+            { emoji: '👕', name: 'Vintage Tee', price: 8, power: 10, slot: 0 },
+            { emoji: '👖', name: 'Thrift Jeans', price: 15, power: 15, slot: 1 },
+            { emoji: '👟', name: 'Used Sneakers', price: 12, power: 12, slot: 2 },
+            { emoji: '🧥', name: 'Coat', price: 20, power: 20, slot: 3 },
+            { emoji: '👗', name: 'Vintage Dress', price: 18, power: 25, slot: 0 },
+            { emoji: '👠', name: 'Heeled Boots', price: 25, power: 18, slot: 2 },
+            { emoji: '🧢', name: 'Baseball Cap', price: 6, power: 8, slot: 3 },
+            { emoji: '👜', name: 'Tote Bag', price: 10, power: 12, slot: 3 },
+            { emoji: '🩳', name: 'Shorts', price: 11, power: 13, slot: 1 },
+            { emoji: '🧣', name: 'Scarf', price: 14, power: 16, slot: 3 }
+        ];
+
+        // Simplified bosses
+        const bosses = [
+            { emoji: '👹', name: 'Shein of Sin', power: 25 },
+            { emoji: '🤖', name: 'Lord Polyester', power: 50 },
+            { emoji: '⚡', name: 'The Zara-thon', power: 80 }
+        ];
+
+        // Initialize game
+        function init() {
+            updateDisplay();
+            generateShop();
+            updateBoss();
+        }
+
+        // Update all display elements
+        function updateDisplay() {
+            document.getElementById('budget').textContent = game.budget;
+            document.getElementById('eco-power').textContent = game.ecoPower;
+            
+            // Update progress bar
+            const currentBoss = bosses[game.currentBoss];
+            const progress = Math.min((game.ecoPower / currentBoss.power) * 100, 100);
+            document.getElementById('progress-fill').style.width = progress + '%';
+            document.getElementById('progress-text').textContent = 
+                progress >= 100 ? 'READY TO BATTLE!' : Math.round(progress) + '% Ready to Battle';
+            
+            // Update battle button
+            document.getElementById('battle-btn').disabled = game.ecoPower < currentBoss.power;
+            
+            // Hide tutorial after first purchase
+            if (game.itemsPurchased > 0) {
+                document.getElementById('tutorial-hint').style.display = 'none';
+            }
+        }
+
+        // Generate shop items
+        function generateShop() {
+            const shop = document.getElementById('shop-items');
+            shop.innerHTML = '';
+            
+            // Pick 6 random items
+            const shuffled = [...items].sort(() => 0.5 - Math.random());
+            const shopItems = shuffled.slice(0, 6);
+            
+            shopItems.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'item-card';
+                
+                // Check if affordable
+                if (game.budget < item.price) {
+                    card.classList.add('too-expensive');
+                }
+                
+                card.innerHTML = `
+                    <div class="item-emoji">${item.emoji}</div>
+                    <div class="item-name">${item.name}</div>
+                    <div class="item-power">⚡ +${item.power} Power</div>
+                    <div class="item-price">$${item.price}</div>
+                `;
+                
+                card.onclick = () => buyItem(item, card);
+                shop.appendChild(card);
+            });
+        }
+
+        // Buy item
+        function buyItem(item, card) {
+            if (card.classList.contains('purchased') || card.classList.contains('too-expensive')) {
+                return;
+            }
+            
+            if (game.budget >= item.price) {
+                game.budget -= item.price;
+                game.ecoPower += item.power;
+                game.outfit.push(item);
+                game.itemsPurchased++;
+                
+                // Update outfit display
+                const slot = document.getElementById(`slot-${item.slot}`);
+                slot.textContent = item.emoji;
+                slot.classList.add('filled');
+                
+                // Mark as purchased
+                card.classList.add('purchased');
+                
+                // Check for combo
+                if (game.outfit.length >= 2 && game.outfit.length % 2 === 0) {
+                    showCombo();
+                }
+                
+                updateDisplay();
+                updateAffordability();
+            }
+        }
+
+        // Update item affordability
+        function updateAffordability() {
+            const cards = document.querySelectorAll('.item-card');
+            cards.forEach(card => {
+                const price = parseInt(card.querySelector('.item-price').textContent.replace('$', ''));
+                if (game.budget < price && !card.classList.contains('purchased')) {
+                    card.classList.add('too-expensive');
+                } else if (game.budget >= price) {
+                    card.classList.remove('too-expensive');
+                }
+            });
+        }
+
+        // Show combo popup
+        function showCombo() {
+            const popup = document.createElement('div');
+            popup.className = 'combo-popup';
+            popup.innerHTML = `
+                💥 COMBO BONUS! 💥<br>
+                +${game.outfit.length * 2} Eco-Power!
+            `;
+            document.body.appendChild(popup);
+            
+            game.ecoPower += game.outfit.length * 2;
+            
+            setTimeout(() => {
+                if (popup.parentNode) {
+                    popup.parentNode.removeChild(popup);
+                }
+            }, 3000);
+        }
+
+        // Update boss display
+        function updateBoss() {
+            const boss = bosses[game.currentBoss];
+            document.getElementById('boss-emoji').textContent = boss.emoji;
+            document.getElementById('boss-name').textContent = boss.name;
+            document.getElementById('boss-weakness').textContent = 
+                `Weakness: Needs ${boss.power} Eco-Power to defeat!`;
+        }
+
+        // Battle function
+        function battle() {
+            const boss = bosses[game.currentBoss];
+            if (game.ecoPower >= boss.power) {
+                const victory = document.getElementById('victory-message');
+                victory.innerHTML = `
+                    🎉 VICTORY! 🎉<br>
+                    You defeated ${boss.name} with the power of sustainable fashion!<br>
+                    Your thrifted outfit saved the planet!
+                `;
+                victory.style.display = 'block';
+                
+                // Move to next boss
+                game.currentBoss = Math.min(game.currentBoss + 1, bosses.length - 1);
+                updateBoss();
+                updateDisplay();
+                
+                // Hide victory message after 5 seconds
+                setTimeout(() => {
+                    victory.style.display = 'none';
+                }, 5000);
+            }
+        }
+
+        // New game
+        function newGame() {
+            game = {
+                budget: 50,
+                ecoPower: 0,
+                outfit: [],
+                currentBoss: 0,
+                itemsPurchased: 0
+            };
+            
+            // Reset outfit display
+            for (let i = 0; i < 4; i++) {
+                const slot = document.getElementById(`slot-${i}`);
+                slot.classList.remove('filled');
+                slot.textContent = ['👕', '👖', '👟', '🧥'][i];
+            }
+            
+            document.getElementById('victory-message').style.display = 'none';
+            document.getElementById('tutorial-hint').style.display = 'block';
+            
+            init();
+        }
+
+        // New items
+        function newItems() {
+            generateShop();
+            updateAffordability();
+        }
+
+        // Start the game
+        init();
+    </script>
+</body>
+</html> 
