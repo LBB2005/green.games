@@ -157,53 +157,117 @@ function loadGames() {
     comingSoonMessage.style.display = 'none';
     gamesGrid.style.display = 'grid';
     
-    // Create game cards
+    // Clear existing games
+    gamesGrid.innerHTML = '';
+    
+    // Create game cards compatible with main.js game player system
     GAMES.forEach(game => {
         const gameCard = document.createElement('div');
         gameCard.className = 'game-card';
+        gameCard.setAttribute('data-game', game.id); // Required for main.js compatibility
+        
         gameCard.innerHTML = `
             <div class="game-icon">${game.icon}</div>
             <h3>${game.title}</h3>
             <p>${game.description}</p>
-            <button class="play-button" onclick="playGame('${game.url}')">Play Now</button>
+            <button class="play-button">Play Now</button>
         `;
+        
         gamesGrid.appendChild(gameCard);
+    });
+    
+    // Set up game card interactions after creating them
+    setupGameCardInteractions();
+}
+
+// Setup game card interactions to work with the existing game player system
+function setupGameCardInteractions() {
+    const gameCards = document.querySelectorAll('.game-card');
+    gameCards.forEach(card => {
+        const playButton = card.querySelector('.play-button');
+        const gameId = card.getAttribute('data-game');
+        const gameTitle = card.querySelector('h3').textContent;
+        
+        if (playButton && gameId) {
+            playButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Find the game configuration
+                const game = GAMES.find(g => g.id === gameId);
+                if (game) {
+                    playGame(game.url, gameTitle);
+                }
+            });
+            
+            // Add enhanced hover effects
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-12px)';
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(-8px)';
+            });
+        }
     });
 }
 
 // Load games when page loads
 document.addEventListener('DOMContentLoaded', loadGames);
 
-function playGame(gameUrl) {
-    // Check if it's a local game (starts with 'games/') or external URL
-    if (gameUrl.startsWith('games/')) {
-        // For local games, navigate directly to the game page
+function playGame(gameUrl, gameTitle) {
+    console.log('Loading game:', gameUrl, gameTitle);
+    
+    // Get game player elements
+    const gamePlayer = document.getElementById('gamePlayer');
+    const gameFrame = document.getElementById('gameFrame');
+    const currentGameTitle = document.getElementById('currentGameTitle');
+    
+    if (!gamePlayer || !gameFrame || !currentGameTitle) {
+        console.error('Game player elements not found');
+        // Fallback to direct navigation
         window.location.href = gameUrl;
-    } else {
-        // For external games, use the iframe player
-        const gamePlayer = document.getElementById('gamePlayer');
-        const gameFrame = document.getElementById('gameFrame');
-        const gameTitle = document.getElementById('currentGameTitle');
-        
-        // Show game player
-        gamePlayer.classList.add('active');
-        gamePlayer.scrollIntoView({ behavior: 'smooth' });
-        
-        // Load game in iframe
-        gameFrame.innerHTML = `<iframe src="${gameUrl}" width="100%" height="100%" frameborder="0"></iframe>`;
-        gameTitle.textContent = 'Loading Game...';
+        return;
     }
+    
+    // Set game title
+    currentGameTitle.textContent = gameTitle || 'Loading Game...';
+    
+    // Load game in iframe
+    gameFrame.innerHTML = `<iframe src="${gameUrl}" frameborder="0" allowfullscreen style="width: 100%; height: 100%; border: none;"></iframe>`;
+    
+    // Show game player
+    gamePlayer.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    
+    // Scroll to game player
+    gamePlayer.scrollIntoView({ behavior: 'smooth' });
+    
+    console.log('Game loaded successfully:', gameUrl);
 }
 
 function closeGame() {
+    console.log('Closing game player');
+    
     const gamePlayer = document.getElementById('gamePlayer');
     const gameFrame = document.getElementById('gameFrame');
     
-    gamePlayer.classList.remove('active');
-    gameFrame.innerHTML = '';
-    
-    // Scroll back to games
-    document.getElementById('games').scrollIntoView({ behavior: 'smooth' });
+    if (gamePlayer) {
+        gamePlayer.classList.remove('active');
+        document.body.style.overflow = 'auto';
+        
+        // Clear the game frame after animation
+        setTimeout(() => {
+            if (gameFrame) {
+                gameFrame.innerHTML = '';
+            }
+        }, 300);
+        
+        // Scroll back to games section
+        document.getElementById('games').scrollIntoView({ behavior: 'smooth' });
+        
+        console.log('Game player closed');
+    }
 }
 
 /**
